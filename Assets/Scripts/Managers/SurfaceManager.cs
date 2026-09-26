@@ -11,11 +11,24 @@ public class SurfaceManager : MonoBehaviour
     [SerializeField] private ARAnchorManager anchorManager;
     [SerializeField] private ARPlaneManager planeManager;
 
+    public static SurfaceManager Instance;
+
     ARAnchor surfaceAnchor;
 
     GameObject surface;
 
     bool changingSurface;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        } else
+        {
+            Destroy(this);
+        }
+    }
 
     private void Update()
     {

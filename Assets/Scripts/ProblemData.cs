@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName ="ProblemData", menuName ="DiagramData")]
+[CreateAssetMenu(fileName ="ProblemData", menuName ="ProblemData")]
 public class ProblemData : ScriptableObject
 {
     public string key;
@@ -10,5 +10,5 @@ public class ProblemData : ScriptableObject
 
     public string solutionSteps;
 
-    DiagramData diagram;
+    public DiagramData diagram;
 }
