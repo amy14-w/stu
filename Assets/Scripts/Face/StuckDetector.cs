@@ -107,6 +107,15 @@ public class StuckDetector : MonoBehaviour
         if (FrownTime >= FrownNeeded && OnPageTime >= OnPageNeeded) Ask();
     }
 
+    // Back to a clean Watching state (used when Stu is unlocked / face detection pauses).
+    public void ResetState()
+    {
+        State = StuckState.Watching;
+        OnPageTime = 0f;
+        FrownTime = 0f;
+        CooldownLeft = 0f;
+    }
+
     public void Ask()
     {
         if (State == StuckState.Asking) return;

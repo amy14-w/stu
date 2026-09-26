@@ -66,6 +66,37 @@ public class FaceReceiver : MonoBehaviour
     IEnumerator Start()
     {
         if (!autoStart) yield break;
+        yield return WaitForPermission();
+        wantRunning = true;
+        pendingStart = StartCoroutine(StartAfterDelay());
+    }
+
+    // For scenes that start face detection later (StuDeskController: only once Stu is placed and locked).
+    public bool Tracking => wantRunning;
+
+    public void BeginTracking()
+    {
+        if (wantRunning) return;
+        wantRunning = true;
+        if (pendingStart != null) StopCoroutine(pendingStart);
+        pendingStart = StartCoroutine(BeginAfterPermission());
+    }
+
+    public void EndTracking()
+    {
+        wantRunning = false;
+        if (pendingStart != null) { StopCoroutine(pendingStart); pendingStart = null; }
+        StopTracker();
+    }
+
+    IEnumerator BeginAfterPermission()
+    {
+        yield return WaitForPermission();
+        yield return StartAfterDelay();
+    }
+
+    static IEnumerator WaitForPermission()
+    {
 #if UNITY_ANDROID && !UNITY_EDITOR
         while (!Permission.HasUserAuthorizedPermission(Permission.Camera))
         {
@@ -74,8 +105,7 @@ public class FaceReceiver : MonoBehaviour
             yield return new WaitForSeconds(1f);
         }
 #endif
-        wantRunning = true;
-        pendingStart = StartCoroutine(StartAfterDelay());
+        yield break;
     }
 
     IEnumerator StartAfterDelay()
@@ -146,6 +176,7 @@ public class FaceReceiver : MonoBehaviour
     // For non-Android sources (ARKitFaceSource on iPhone).
     public void Publish(FaceFrame frame)
     {
+        if (!wantRunning) return; // face detection not started (e.g. Stu not placed yet)
         lastPublishTime = Time.time;
         Deliver(frame);
     }

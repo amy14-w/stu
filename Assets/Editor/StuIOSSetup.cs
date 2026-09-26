@@ -17,6 +17,7 @@ public static class StuIOSSetup
 {
     const string ARScene = "Assets/Scenes/StuARDemo.unity";
     const string AndroidScene = "Assets/Scenes/StuWindowDemo.unity";
+    const string IntegratedScene = "Assets/Scenes/StuIntegrated.unity";
     const string StuMaterial = "Assets/StuMat.mat";
 
     [MenuItem("Stu/iOS/Create AR Scene")]
@@ -82,20 +83,25 @@ public static class StuIOSSetup
     [MenuItem("Stu/Use Scene For Current Platform")]
     static void UseScenesForCurrentPlatform() => UseScenesFor(EditorUserBuildSettings.activeBuildTarget);
 
-    // Puts the platform's Stu scene first (enabled) and disables the other platform's Stu scene.
+    // Puts the platform's Stu scene first (enabled) and disables the other Stu scenes.
+    // StuIntegrated (Quinton's AR scene + Pip + face detection, both platforms) wins when it exists;
+    // otherwise iOS -> StuARDemo, Android -> StuWindowDemo.
     static void UseScenesFor(BuildTarget target)
     {
-        string want = target == BuildTarget.iOS ? ARScene : target == BuildTarget.Android ? AndroidScene : null;
-        string other = want == ARScene ? AndroidScene : ARScene;
-        if (want == null || !File.Exists(want)) return;
+        if (target != BuildTarget.iOS && target != BuildTarget.Android) return;
+        string want = File.Exists(IntegratedScene) ? IntegratedScene : target == BuildTarget.iOS ? ARScene : AndroidScene;
+        if (!File.Exists(want)) return;
 
+        var stuScenes = new[] { IntegratedScene, ARScene, AndroidScene };
         var scenes = EditorBuildSettings.scenes.Where(s => s.path != want).ToList();
         foreach (var s in scenes)
-            if (s.path == other) s.enabled = false;
+            if (stuScenes.Contains(s.path)) s.enabled = false;
         scenes.Insert(0, new EditorBuildSettingsScene(want, true));
         EditorBuildSettings.scenes = scenes.ToArray();
         Debug.Log($"[Stu] Build scene for {target}: {want}");
     }
+
+    public static void UseScenesForActivePlatform() => UseScenesFor(EditorUserBuildSettings.activeBuildTarget);
 
     class PlatformSwitchHook : IActiveBuildTargetChanged
     {

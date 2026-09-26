@@ -105,6 +105,17 @@ sizes (check `isConcurrentSessionConfigurationSupported`). Back frames go to Uni
 - ARKit settings: Face Tracking ON. iOS bundle id `com.hackgt13.stu`. Building needs Unity iOS Build Support,
   Xcode, and an Apple ID (free personal team is fine); tune stuck thresholds again on the iPhone.
 
+## Integrated scene (Quinton's AR scene + Pip + face detection, iPhone), branch desk-placement
+
+- Menu Stu > Integrate > Create Integrated Scene (from Quinton) copies Quinton.unity to StuIntegrated.unity
+  (Quinton.unity untouched) and adds Pip (StuPipAR prefab = StuPip + Stu component + DiagramAnchor, 13 cm),
+  face detection, and `StuARFaceBridge`. Buttons (Spawn Stu / Change Surface / Test Problem) bottom right.
+- Flow: Change Surface -> tap a plane -> Spawn Stu -> face detection starts. Change Surface pauses it.
+- iPhone only for face detection here: ARKit tracks desk + face together, so Stu stays anchored on the real
+  desk. Android: face detection is off in this scene (ARCore + front plugin deadlocked the S22 camera service);
+  use StuWindowDemo for Android face detection.
+- Re-run the menu after Quinton changes his scene to pick up his changes.
+
 ## Conventions
 
 - One owner per `.unity` scene file; prefer prefabs and scripts to avoid merge conflicts.
