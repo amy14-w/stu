@@ -10,8 +10,6 @@ using static Mediapipe.CopyCalculatorOptions.Types;
 
 public class StuSpawner : MonoBehaviour
 {
-    [SerializeField] private SurfaceManager surfaceManager;
-
     [SerializeField] private GameObject stuPrefab;
 
     Transform stuInstance;
@@ -26,21 +24,16 @@ public class StuSpawner : MonoBehaviour
         EnhancedTouchSupport.Disable();
     }
 
-    private void Update()
-    {
-        
-    }
-
     public void TrySpawnStu()
     {
-        if (surfaceManager.IsSurfaceInitialized())
+        if (SurfaceManager.Instance.IsSurfaceInitialized())
         {
             if (stuInstance == null)
             {
                 stuInstance = Instantiate(stuPrefab).transform;
             }
 
-            var surface = surfaceManager.GetMainSurface();
+            var surface = SurfaceManager.Instance.GetMainSurface();
 
             stuInstance.parent = surface;
 
@@ -52,10 +45,17 @@ public class StuSpawner : MonoBehaviour
 
             stuInstance.localPosition = Vector3.zero;
             stuInstance.rotation = rotation;
+
+            stuInstance.GetComponent<Stu>().Initialize();
         }  else
         {
             Debug.LogWarning("Could not place Stu: surface not initialized");
         }
+    }
+
+    public Stu GetStu()
+    {
+        return stuInstance.GetComponent<Stu>();
     }
 
     /*private void SpawnStu(Vector2 touchPos) // spawns or repositions Stu to where user clicks, makes him face the user as well

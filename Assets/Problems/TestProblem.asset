@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b341ab1cfc589d449bc09aab6d52b4d1, type: 3}
+  m_Name: TestProblem
+  m_EditorClassIdentifier: Assembly-CSharp::ProblemData
+  key: test
+  problemText: Does the sphere grow?
+  answer: Yes
+  solutionSteps: 1) observe the diagram sphere grow animation 2) draw conclusion
+    from diagram
+  diagram: {fileID: 11400000, guid: 5e2492eedf28b4140bc3223be38d3416, type: 2}

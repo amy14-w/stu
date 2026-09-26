@@ -6,6 +6,19 @@ public class ProblemsManager : MonoBehaviour
 
     ProblemData currentProblem = null;
 
+    public static ProblemsManager Instance;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        } else
+        {
+            Destroy(this);
+        }
+    }
+
     public ProblemData RetrieveProblem(string key)
     {
         ProblemData foundProblem = null;
@@ -35,5 +48,10 @@ public class ProblemsManager : MonoBehaviour
         {
             currentProblem = newProblem;
         }
+    }
+
+    public ProblemData GetCurrentProblem()
+    {
+        return currentProblem;
     }
 }

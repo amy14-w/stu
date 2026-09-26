@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "DiagramData", menuName = "DiagramData")]
@@ -7,5 +8,5 @@ public class DiagramData : ScriptableObject
 
     public string description;
 
-    public string[] actionTags;
+    public List<string> actionTags;
 }
