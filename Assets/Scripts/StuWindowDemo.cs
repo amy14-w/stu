@@ -6,26 +6,36 @@ using UnityEngine.InputSystem;
 using UnityEngine.Android;
 #endif
 
-// STU WINDOW DEMO (Galaxy S22 test)
-// - Back camera fills the screen (the desk on the other side of the phone).
-// - A placeholder Stu stands on that desk. Tap/click to move him. He bobs and faces you.
-// - Front camera runs at the same time (small preview, top right) -> later feeds MediaPipe.
-//
-// Setup: new EMPTY scene (no AR Session / XR Origin), add an empty GameObject,
-// attach this script, put the scene first in Build Profiles, Build And Run.
-// Everything else (camera, canvases, light, placeholder character) is created by code.
+// STU WINDOW DEMO v2 (Galaxy S22 test)
+// - Back camera fills the screen, placeholder Stu stands on the desk, front camera runs in the corner.
+// - v2: camera test modes (Both / BackOnly / FrontOnly), camera order switch, on-screen device list,
+//        and a material slot that fixes the pink/magenta Stu on the phone.
 public class StuWindowDemo : MonoBehaviour
 {
+    public enum CameraTest { Both, BackOnly, FrontOnly }
+
+    [Header("Camera test")]
+    public CameraTest cameraTest = CameraTest.Both;
+    [Tooltip("Which camera to open first when testing Both.")]
+    public bool openBackFirst = true;
+
     [Header("Character")]
     [Tooltip("Optional: drag a character prefab here. Leave empty for the built-in placeholder Stu.")]
     public GameObject stuPrefab;
-    [Tooltip("Height of the placeholder Stu in scene units (meters).")]
+    [Tooltip("Drag any URP Lit material here. Without it, Stu shows up pink on the phone.")]
+    public Material stuMaterial;
     public float stuHeight = 0.12f;
 
     [Header("Virtual camera (tune so Stu sits on the real desk)")]
-    public float cameraHeight = 0.35f;   // how high the phone is above the desk
-    public float cameraTilt = 25f;       // how much the back camera looks down
-    public float cameraFov = 60f;        // roughly the back camera's vertical FOV in landscape
+    public float cameraHeight = 0.35f;
+    public float cameraTilt = 25f;
+    public float cameraFov = 60f;
+
+    // Set by UI (e.g. StuSpeechBubble) while it needs taps, so a button press doesn't also move Stu.
+    public static bool BlockTaps;
+    // True once the back WebCamTexture has delivered a frame. FaceReceiver waits for this before opening
+    // the front camera: opening both at the same instant deadlocked the S22's camera service.
+    public static bool BackCameraReady;
 
     Camera cam;
     WebCamTexture backCam, frontCam;
@@ -38,6 +48,7 @@ public class StuWindowDemo : MonoBehaviour
     int backFrames, frontFrames, backFps, frontFps;
     float fpsTimer;
     string status = "Starting...";
+    string deviceInfo = "";
 
     IEnumerator Start()
     {
@@ -59,35 +70,59 @@ public class StuWindowDemo : MonoBehaviour
 #endif
 
         string backName = null, frontName = null;
-        foreach (var d in WebCamTexture.devices)
+        var devices = WebCamTexture.devices;
+        for (int i = 0; i < devices.Length; i++)
         {
+            var d = devices[i];
+            deviceInfo += $"\n[{i}] {d.name} {(d.isFrontFacing ? "FRONT" : "back")}";
             if (d.isFrontFacing) { if (frontName == null) frontName = d.name; }
             else { if (backName == null) backName = d.name; }
         }
 
-        // In the Mac Editor the built-in webcam usually shows up as "not front facing",
-        // so it becomes the background. That's fine for testing Stu placement.
-        #if UNITY_EDITOR
+#if UNITY_ANDROID && !UNITY_EDITOR
+        try {
+            var cameraManager = AndroidApplication.currentContext.Call<AndroidJavaObject>("getSystemService", "camera");
+            deviceInfo += "\nConcurrent pairs: " + cameraManager.Call<AndroidJavaObject>("getConcurrentCameraIds").Call<string>("toString");
+        } catch (System.Exception e) { deviceInfo += "\nConcurrent check failed: " + e.Message; }
+#endif
+
+#if UNITY_EDITOR
+        // Mac has one webcam: use it as the background so the Editor preview looks right.
         if (backName == null) { backName = frontName; frontName = null; }
 #endif
-        if (backName != null)
+
+        bool wantBack = cameraTest != CameraTest.FrontOnly && backName != null;
+        bool wantFront = cameraTest != CameraTest.BackOnly && frontName != null;
+
+        if (openBackFirst)
         {
-            backCam = new WebCamTexture(backName, 1280, 720, 30);
-            backImage.texture = backCam;
-            backCam.Play();
+            if (wantBack) StartBack(backName);
+            if (wantBack && wantFront) yield return new WaitForSeconds(1.5f);
+            if (wantFront) StartFront(frontName);
+        }
+        else
+        {
+            if (wantFront) StartFront(frontName);
+            if (wantBack && wantFront) yield return new WaitForSeconds(1.5f);
+            if (wantBack) StartBack(backName);
         }
 
-        yield return new WaitForSeconds(1.5f); // let the first camera settle before opening the second
+        status = $"Mode: {cameraTest}, back first: {openBackFirst}. Tap the desk to move Stu";
+    }
 
-        if (frontName != null)
-        {
-            frontCam = new WebCamTexture(frontName, 640, 480, 30);
-            frontImage.texture = frontCam;
-            frontCam.Play();
-            frontImage.enabled = true;
-        }
+    void StartBack(string name)
+    {
+        backCam = new WebCamTexture(name, 1280, 720, 30);
+        backImage.texture = backCam;
+        backCam.Play();
+    }
 
-        status = "Tap the desk to move Stu";
+    void StartFront(string name)
+    {
+        frontCam = new WebCamTexture(name, 640, 480, 30);
+        frontImage.texture = frontCam;
+        frontImage.enabled = true;
+        frontCam.Play();
     }
 
     void SetupCamera()
@@ -114,7 +149,6 @@ public class StuWindowDemo : MonoBehaviour
 
     void SetupCanvases()
     {
-        // Back camera feed: rendered BEHIND the 3D scene so Stu draws on top of it.
         var bgCanvas = new GameObject("BackCameraCanvas").AddComponent<Canvas>();
         bgCanvas.renderMode = RenderMode.ScreenSpaceCamera;
         bgCanvas.worldCamera = cam;
@@ -128,7 +162,6 @@ public class StuWindowDemo : MonoBehaviour
         backFitter = backImage.gameObject.AddComponent<AspectRatioFitter>();
         backFitter.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
 
-        // Front camera preview: small, on top of everything (debug only; hide for the demo).
         var overlay = new GameObject("OverlayCanvas").AddComponent<Canvas>();
         overlay.renderMode = RenderMode.ScreenSpaceOverlay;
 
@@ -141,18 +174,27 @@ public class StuWindowDemo : MonoBehaviour
         frontImage.enabled = false;
     }
 
+    Material MakeMat(Color c)
+    {
+        // Copying a material that's referenced in the scene keeps its shader in the build (no pink).
+        Material m = stuMaterial != null
+            ? new Material(stuMaterial)
+            : new Material(Shader.Find("Universal Render Pipeline/Lit"));
+        m.color = c;
+        return m;
+    }
+
     Transform CreateStu()
     {
         if (stuPrefab != null) return Instantiate(stuPrefab).transform;
 
-        // Placeholder Stu: orange capsule with googly eyes. Replace with the real model later.
         var root = new GameObject("Stu (placeholder)").transform;
 
-        var body = GameObject.CreatePrimitive(PrimitiveType.Capsule); // height 2, radius 0.5
+        var body = GameObject.CreatePrimitive(PrimitiveType.Capsule);
         body.name = "Body";
         body.transform.SetParent(root, false);
-        body.transform.localPosition = new Vector3(0f, 1f, 0f);       // feet on the desk
-        body.GetComponent<Renderer>().material.color = new Color(1f, 0.6f, 0.2f);
+        body.transform.localPosition = new Vector3(0f, 1f, 0f);
+        body.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(1f, 0.6f, 0.2f));
 
         for (int side = -1; side <= 1; side += 2)
         {
@@ -161,13 +203,14 @@ public class StuWindowDemo : MonoBehaviour
             eye.transform.SetParent(root, false);
             eye.transform.localPosition = new Vector3(0.2f * side, 1.5f, 0.42f);
             eye.transform.localScale = Vector3.one * 0.25f;
+            eye.GetComponent<Renderer>().sharedMaterial = MakeMat(Color.white);
 
             var pupil = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             pupil.name = "Pupil";
             pupil.transform.SetParent(eye.transform, false);
             pupil.transform.localPosition = new Vector3(0f, 0f, 0.4f);
             pupil.transform.localScale = Vector3.one * 0.5f;
-            pupil.GetComponent<Renderer>().material.color = Color.black;
+            pupil.GetComponent<Renderer>().sharedMaterial = MakeMat(Color.black);
         }
 
         root.localScale = Vector3.one * (stuHeight / 2f);
@@ -182,14 +225,12 @@ public class StuWindowDemo : MonoBehaviour
 
         if (stu == null) return;
 
-        // Tap (phone) or click (Editor) on the desk to move Stu there.
-        if (TryGetTap(out Vector2 tap))
+        if (!BlockTaps && TryGetTap(out Vector2 tap))
         {
             Ray ray = cam.ScreenPointToRay(tap);
             if (desk.Raycast(ray, out float dist)) target = ray.GetPoint(dist);
         }
 
-        // Idle bob + walk toward the target + turn to face the student.
         float bob = Mathf.Abs(Mathf.Sin(Time.time * 3f)) * stuHeight * 0.08f;
         stu.position = Vector3.Lerp(stu.position, target + Vector3.up * bob, 8f * Time.deltaTime);
 
@@ -219,7 +260,7 @@ public class StuWindowDemo : MonoBehaviour
 
     static void FixFeedOrientation(WebCamTexture tex, RawImage img, bool mirror, AspectRatioFitter fitter)
     {
-        if (tex == null || tex.width < 100) return; // not started yet
+        if (tex == null || tex.width < 100) return;
         img.rectTransform.localEulerAngles = new Vector3(0f, 0f, -tex.videoRotationAngle);
         bool flipY = tex.videoVerticallyMirrored;
         img.uvRect = new Rect(mirror ? 1f : 0f, flipY ? 1f : 0f, mirror ? -1f : 1f, flipY ? -1f : 1f);
@@ -228,7 +269,7 @@ public class StuWindowDemo : MonoBehaviour
 
     void CountFrames()
     {
-        if (backCam != null && backCam.didUpdateThisFrame) backFrames++;
+        if (backCam != null && backCam.didUpdateThisFrame) { backFrames++; BackCameraReady = true; }
         if (frontCam != null && frontCam.didUpdateThisFrame) frontFrames++;
         fpsTimer += Time.deltaTime;
         if (fpsTimer >= 1f)
@@ -240,16 +281,17 @@ public class StuWindowDemo : MonoBehaviour
 
     void OnGUI()
     {
-        var style = new GUIStyle(GUI.skin.label) { fontSize = 32 };
+        var style = new GUIStyle(GUI.skin.label) { fontSize = 24 };
         style.normal.textColor = Color.yellow;
-        string verdict = backFps > 5 && frontFps > 5 ? "PASS: both cameras live"
-                       : "Checking... FAIL if one fps stays 0";
-        GUI.Label(new Rect(20f, 20f, Screen.width * 0.6f, 200f),
-            $"BACK fps={backFps}  FRONT fps={frontFps}\n{verdict}\n{status}", style);
+        string backState = backCam == null ? "not opened" : $"playing={backCam.isPlaying} fps={backFps}";
+        string frontState = frontCam == null ? "not opened" : $"playing={frontCam.isPlaying} fps={frontFps}";
+        GUI.Label(new Rect(20f, 20f, Screen.width * 0.6f, Screen.height - 40f),
+            $"BACK {backState}\nFRONT {frontState}\n{status}\nCameras:{deviceInfo}", style);
     }
 
     void OnDestroy()
     {
+        BackCameraReady = false;
         if (backCam != null) backCam.Stop();
         if (frontCam != null) frontCam.Stop();
     }
