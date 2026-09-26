@@ -195,6 +195,7 @@ MonoBehaviour:
   noseSneerGain: 4
   browInnerUpGain: 0
   mouthFrownGain: 0
+  smileSuppressThreshold: 0.5
   requireEyesOnPage: 0
   lookDownThreshold: 0.3
   lookAwayThreshold: 0.5
@@ -474,7 +475,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ced54defab5db40a69d160c1941b43c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StuARPlacement
-  stuPrefab: {fileID: 0}
+  stuPrefab: {fileID: 133931211850270598, guid: 56bf82dfc588241098d3f588a9519d81, type: 3}
   stuMaterial: {fileID: 2100000, guid: a45ad7a44957e438090772c1ba99a804, type: 2}
   stuHeight: 0.12
   fallbackSeconds: 5
@@ -648,8 +649,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4966719baa26e4b0e8231a24d9bd491a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.XR.ARFoundation::UnityEngine.XR.ARFoundation.ARCameraManager
-  m_FocusMode: 1
-  m_LightEstimationMode: 0
+  m_FocusMode: -1
+  m_LightEstimationMode: -1
   m_AutoFocus: 1
   m_ImageStabilization: 0
   m_LightEstimation: 0

@@ -42,6 +42,19 @@ public static class StuPlaceholder
         return root;
     }
 
+    // Instantiates a character prefab (e.g. StuPip) and scales it so its renderers are `height` tall,
+    // standing on its pivot. Works whatever units the model was exported in.
+    public static Transform Spawn(GameObject prefab, float height)
+    {
+        var t = Object.Instantiate(prefab).transform;
+        var renderers = t.GetComponentsInChildren<Renderer>();
+        if (renderers.Length == 0) return t;
+        Bounds b = renderers[0].bounds;
+        for (int i = 1; i < renderers.Length; i++) b.Encapsulate(renderers[i].bounds);
+        if (b.size.y > 0.0001f) t.localScale *= height / b.size.y;
+        return t;
+    }
+
     static Material MakeMat(Material baseMaterial, Color c)
     {
         Material m = baseMaterial != null

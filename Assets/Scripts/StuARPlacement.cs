@@ -10,7 +10,7 @@ using UnityEngine.XR.ARSubsystems;
 // placed a short distance in front of the camera instead.
 public class StuARPlacement : MonoBehaviour
 {
-    [Tooltip("Optional: character prefab. Leave empty for the placeholder Stu.")]
+    [Tooltip("Character prefab (StuPip). Leave empty for the placeholder capsule.")]
     public GameObject stuPrefab;
     [Tooltip("Any URP Lit material (e.g. StuMat). Without it, Stu shows up pink on the phone.")]
     public Material stuMaterial;
@@ -29,6 +29,7 @@ public class StuARPlacement : MonoBehaviour
     Transform stu;
     Vector3 target;
     bool placed;
+    bool hasCharacter;
     float startTime;
     string status = "Point the back camera at the desk...";
 
@@ -62,7 +63,7 @@ public class StuARPlacement : MonoBehaviour
         if (!StuWindowDemo.BlockTaps && TryGetTap(out Vector2 tap) && RaycastDesk(tap, out Pose tapPose))
             target = tapPose.position;
 
-        float bob = Mathf.Abs(Mathf.Sin(Time.time * 3f)) * stuHeight * 0.08f;
+        float bob = hasCharacter ? 0f : Mathf.Abs(Mathf.Sin(Time.time * 3f)) * stuHeight * 0.08f;
         stu.position = Vector3.Lerp(stu.position, target + Vector3.up * bob, 8f * Time.deltaTime);
 
         Vector3 look = cam.transform.position - stu.position;
@@ -73,7 +74,8 @@ public class StuARPlacement : MonoBehaviour
 
     void Place(Vector3 position, string message)
     {
-        stu = stuPrefab != null ? Instantiate(stuPrefab).transform : StuPlaceholder.Create(stuMaterial, stuHeight);
+        stu = stuPrefab != null ? StuPlaceholder.Spawn(stuPrefab, stuHeight) : StuPlaceholder.Create(stuMaterial, stuHeight);
+        hasCharacter = stu.GetComponent<StuCharacter>() != null;
         stu.position = target = position;
         placed = true;
         status = message;

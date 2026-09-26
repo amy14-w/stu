@@ -92,7 +92,9 @@ public class StuSpeechBubble : MonoBehaviour
     void FindStu()
     {
         nextFindTime = Time.time + 0.5f;
-        var go = GameObject.Find("Stu (placeholder)");
+        var character = FindFirstObjectByType<StuCharacter>();
+        if (character != null) { stu = character.transform; return; }
+        var go = GameObject.Find(StuPlaceholder.Name);
         if (go == null) go = GameObject.Find("Stu");
         if (go != null) stu = go.transform;
     }

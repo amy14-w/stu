@@ -67,6 +67,7 @@ public static class StuIOSSetup
 
         var placement = new GameObject("Stu Placement").AddComponent<StuARPlacement>();
         placement.stuMaterial = AssetDatabase.LoadAssetAtPath<Material>(StuMaterial);
+        placement.stuPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/StuPip.prefab"); // null -> capsule
         placement.raycastManager = raycasts;
         if (placement.stuMaterial == null) Debug.LogWarning($"[Stu] {StuMaterial} not found: Stu may render pink.");
 

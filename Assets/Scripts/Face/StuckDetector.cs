@@ -22,6 +22,8 @@ public class StuckDetector : MonoBehaviour
     public float noseSneerGain = 4f;
     public float browInnerUpGain = 0f;
     public float mouthFrownGain = 0f;
+    [Tooltip("Smiling also raises squint; above this smoothed smile, don't count it as a frown.")]
+    public float smileSuppressThreshold = 0.5f;
 
     [Header("Eyes on page")]
     [Tooltip("Off: 'studying' = face present and not looking away. On: also needs eyes down (lookDown). " +
@@ -84,7 +86,8 @@ public class StuckDetector : MonoBehaviour
         bool lookingAway = signals.LookOut > lookAwayThreshold || signals.LookUp > lookUpAwayThreshold;
         IsOnPage = present && !lookingAway && (!requireEyesOnPage || signals.LookDown > lookDownThreshold);
         FurrowScore = ComputeFurrow();
-        IsFrowning = present && signals.Calibrated && !lookingAway && FurrowScore > furrowThreshold;
+        IsFrowning = present && signals.Calibrated && !lookingAway && signals.Smile < smileSuppressThreshold
+                     && FurrowScore > furrowThreshold;
 
         if (State == StuckState.Asking) return;
 

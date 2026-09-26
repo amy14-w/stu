@@ -296,6 +296,8 @@ MonoBehaviour:
   autoStart: 1
   rotationOverride: -1
   minFrameIntervalMs: 70
+  startDelaySeconds: 2
+  backCameraWaitTimeout: 15
   showDebug: 1
 --- !u!114 &250801964
 MonoBehaviour:
@@ -331,9 +333,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StuckDetector
   demoMode: 1
-  browDownThreshold: 0.35
+  furrowThreshold: 0.3
+  browDownGain: 10
+  squintGain: 3
+  noseSneerGain: 4
+  browInnerUpGain: 0
+  mouthFrownGain: 0
+  smileSuppressThreshold: 0.5
   requireEyesOnPage: 0
   lookDownThreshold: 0.3
+  lookAwayThreshold: 0.5
+  lookUpAwayThreshold: 0.4
+  frownDrainRate: 0.5
   noFaceResetSeconds: 3
   onPageSeconds: 60
   demoOnPageSeconds: 10
@@ -356,6 +367,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FaceSignals
   smoothingSeconds: 0.5
   staleSeconds: 1
+  calibrationSeconds: 3
 --- !u!1 &573705661
 GameObject:
   m_ObjectHideFlags: 0
@@ -387,7 +399,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StuWindowDemo
   cameraTest: 1
   openBackFirst: 1
-  stuPrefab: {fileID: 0}
+  stuPrefab: {fileID: 133931211850270598, guid: 56bf82dfc588241098d3f588a9519d81, type: 3}
   stuMaterial: {fileID: 2100000, guid: a45ad7a44957e438090772c1ba99a804, type: 2}
   stuHeight: 0.3
   cameraHeight: 0.35

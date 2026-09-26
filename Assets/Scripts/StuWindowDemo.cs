@@ -42,6 +42,7 @@ public class StuWindowDemo : MonoBehaviour
     RawImage backImage, frontImage;
     AspectRatioFitter backFitter;
     Transform stu;
+    bool hasCharacter;
     Vector3 target = new Vector3(0f, 0f, 1f);
     readonly Plane desk = new Plane(Vector3.up, Vector3.zero);
 
@@ -58,6 +59,7 @@ public class StuWindowDemo : MonoBehaviour
         SetupCamera();
         SetupCanvases();
         stu = CreateStu();
+        hasCharacter = stu.GetComponent<StuCharacter>() != null;
         stu.position = target;
 
 #if UNITY_ANDROID
@@ -176,7 +178,7 @@ public class StuWindowDemo : MonoBehaviour
 
     Transform CreateStu()
     {
-        if (stuPrefab != null) return Instantiate(stuPrefab).transform;
+        if (stuPrefab != null) return StuPlaceholder.Spawn(stuPrefab, stuHeight);
         return StuPlaceholder.Create(stuMaterial, stuHeight);
     }
 
@@ -194,7 +196,8 @@ public class StuWindowDemo : MonoBehaviour
             if (desk.Raycast(ray, out float dist)) target = ray.GetPoint(dist);
         }
 
-        float bob = Mathf.Abs(Mathf.Sin(Time.time * 3f)) * stuHeight * 0.08f;
+        // The placeholder bobs; an animated character (StuCharacter) moves on its own.
+        float bob = hasCharacter ? 0f : Mathf.Abs(Mathf.Sin(Time.time * 3f)) * stuHeight * 0.08f;
         stu.position = Vector3.Lerp(stu.position, target + Vector3.up * bob, 8f * Time.deltaTime);
 
         Vector3 look = cam.transform.position - stu.position;
