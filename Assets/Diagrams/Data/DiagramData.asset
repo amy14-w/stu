@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: DiagramData
   m_EditorClassIdentifier: Assembly-CSharp::DiagramData
   prefab: {fileID: 3167956228134938165, guid: 35654ad840ab3fa45ab784fde2213c0c, type: 3}
-  description: Just a sphere
+  description: A grey sphere that can grow and stretch. The sphere grows to about
+    3 times its size and stretchs to about double.
   actionTags:
   - GROW_SPHERE
+  - STRETCH_SPHERE
