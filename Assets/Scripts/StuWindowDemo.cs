@@ -174,47 +174,10 @@ public class StuWindowDemo : MonoBehaviour
         frontImage.enabled = false;
     }
 
-    Material MakeMat(Color c)
-    {
-        // Copying a material that's referenced in the scene keeps its shader in the build (no pink).
-        Material m = stuMaterial != null
-            ? new Material(stuMaterial)
-            : new Material(Shader.Find("Universal Render Pipeline/Lit"));
-        m.color = c;
-        return m;
-    }
-
     Transform CreateStu()
     {
         if (stuPrefab != null) return Instantiate(stuPrefab).transform;
-
-        var root = new GameObject("Stu (placeholder)").transform;
-
-        var body = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-        body.name = "Body";
-        body.transform.SetParent(root, false);
-        body.transform.localPosition = new Vector3(0f, 1f, 0f);
-        body.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(1f, 0.6f, 0.2f));
-
-        for (int side = -1; side <= 1; side += 2)
-        {
-            var eye = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            eye.name = side < 0 ? "EyeL" : "EyeR";
-            eye.transform.SetParent(root, false);
-            eye.transform.localPosition = new Vector3(0.2f * side, 1.5f, 0.42f);
-            eye.transform.localScale = Vector3.one * 0.25f;
-            eye.GetComponent<Renderer>().sharedMaterial = MakeMat(Color.white);
-
-            var pupil = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            pupil.name = "Pupil";
-            pupil.transform.SetParent(eye.transform, false);
-            pupil.transform.localPosition = new Vector3(0f, 0f, 0.4f);
-            pupil.transform.localScale = Vector3.one * 0.5f;
-            pupil.GetComponent<Renderer>().sharedMaterial = MakeMat(Color.black);
-        }
-
-        root.localScale = Vector3.one * (stuHeight / 2f);
-        return root;
+        return StuPlaceholder.Create(stuMaterial, stuHeight);
     }
 
     void Update()

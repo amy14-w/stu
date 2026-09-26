@@ -6,7 +6,7 @@ using UnityEngine.Android;
 #endif
 
 // Stu Step 1 (Unity side): starts the native front-camera face tracker (Assets/Plugins/Android/StuFaceTracker.java)
-// and receives its JSON. The GameObject MUST be named "FaceReceiver" because Java calls
+// and receives its JSON. On iPhone, ARKitFaceSource feeds frames in through Publish() instead. The GameObject MUST be named "FaceReceiver" because Java calls
 // UnitySendMessage("FaceReceiver", "OnFace", json). Raw values only; smoothing/states belong in FaceSignals (Step 3).
 [Serializable]
 public class FaceFrame
@@ -39,7 +39,7 @@ public class FaceReceiver : MonoBehaviour
     public float LastFrameTime { get; private set; } = -1f;
     public int Hz { get; private set; }
     public string LastError { get; private set; } = "";
-    public bool Running => tracker != null;
+    public bool Running => tracker != null || Time.time - lastPublishTime < 1f;
 
     public event Action<FaceFrame> FrameReceived;
 
@@ -47,6 +47,7 @@ public class FaceReceiver : MonoBehaviour
     float hzTimer;
     bool wantRunning;   // true once Start() has permission; OnApplicationPause only resumes after that
     Coroutine pendingStart;
+    float lastPublishTime = -10f;
 #if UNITY_ANDROID && !UNITY_EDITOR
     AndroidJavaObject tracker;
 #else
@@ -115,7 +116,7 @@ public class FaceReceiver : MonoBehaviour
             tracker = null;
         }
 #else
-        LastError = "face tracking only runs on an Android device";
+        // No native tracker here; on iPhone ARKitFaceSource calls Publish().
 #endif
     }
 
@@ -134,11 +135,7 @@ public class FaceReceiver : MonoBehaviour
     {
         try
         {
-            var frame = JsonUtility.FromJson<FaceFrame>(json);
-            Latest = frame;
-            LastFrameTime = Time.time;
-            frameCount++;
-            FrameReceived?.Invoke(frame);
+            Deliver(JsonUtility.FromJson<FaceFrame>(json));
         }
         catch (Exception e)
         {
@@ -146,7 +143,22 @@ public class FaceReceiver : MonoBehaviour
         }
     }
 
-    // Called from Java via UnitySendMessage.
+    // For non-Android sources (ARKitFaceSource on iPhone).
+    public void Publish(FaceFrame frame)
+    {
+        lastPublishTime = Time.time;
+        Deliver(frame);
+    }
+
+    void Deliver(FaceFrame frame)
+    {
+        Latest = frame;
+        LastFrameTime = Time.time;
+        frameCount++;
+        FrameReceived?.Invoke(frame);
+    }
+
+    // Called from Java via UnitySendMessage (and by ARKitFaceSource).
     public void OnFaceError(string message)
     {
         LastError = message;
