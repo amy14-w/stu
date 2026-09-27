@@ -29,6 +29,16 @@ public class StuConversation : MonoBehaviour
     public string currentIntendedSteps = "1. Subtract 5 from both sides to get 2x = 12. 2. Divide both sides by 2 to get x = 6.";
     public string[] currentDiagramActions = new string[] { "ADD_WEIGHT", "REMOVE_WEIGHT", "BALANCE" };
 
+    [Header("Echo (loudspeaker -> mic)")]
+    [Tooltip("Mute the mic while Stu's voice is playing so the agent doesn't hear itself through the loudspeaker.")]
+    public bool muteMicWhileStuSpeaks = true;
+    [Tooltip("Output loudness (RMS) above this counts as Stu talking.")]
+    public float stuSpeakingThreshold = 0.01f;
+    [Tooltip("Keep the mic muted this long after Stu's last audible sound (covers pauses and room echo).")]
+    public float micResumeDelay = 0.4f;
+    [Tooltip("Experiment: iOS VoiceChat audio session. Made Stu inaudible in testing, so off by default.")]
+    public bool useVoiceChatAEC = false;
+
     [Header("Demo")]
     [Tooltip("ON = no network. Simulates Stu talking so other lanes can integrate.")]
     public bool demoMode = true;
@@ -63,11 +73,39 @@ public class StuConversation : MonoBehaviour
     [DllImport("__Internal")] static extern void _EnableIOSVoiceChatAEC();
 #endif
 
-    static void EnableEchoCancellation()
+    void EnableEchoCancellation()
     {
 #if UNITY_IOS && !UNITY_EDITOR
-        _EnableIOSVoiceChatAEC();
+        if (useVoiceChatAEC) _EnableIOSVoiceChatAEC();
 #endif
+    }
+
+    // ---- Half-duplex echo guard: mic off while Stu's voice is actually playing ----
+    float lastStuAudioTime = -10f;
+    bool micMutedForEcho;
+
+    void UpdateEchoGuard()
+    {
+        var c = ActiveConversation;
+        if (c == null || !muteMicWhileStuSpeaks)
+        {
+            if (micMutedForEcho && c != null) SetMicMuted(c, false);
+            micMutedForEcho = false;
+            return;
+        }
+        if (c.GetOutputVolume() > stuSpeakingThreshold) lastStuAudioTime = Time.unscaledTime;
+        bool mute = Time.unscaledTime - lastStuAudioTime < micResumeDelay;
+        if (mute != micMutedForEcho)
+        {
+            micMutedForEcho = mute;
+            SetMicMuted(c, mute);
+        }
+    }
+
+    static async void SetMicMuted(Conversation c, bool muted)
+    {
+        try { await c.SetMicMuted(muted); }
+        catch (Exception e) { Debug.LogWarning("[Stu] mic mute failed: " + e.Message); }
     }
 
     void Awake()
@@ -92,6 +130,7 @@ public class StuConversation : MonoBehaviour
 
     void Update()
     {
+        UpdateEchoGuard();
         while (mainThreadQueue.Count > 0)
         {
             var a = mainThreadQueue.Dequeue();
