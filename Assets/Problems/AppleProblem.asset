@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b341ab1cfc589d449bc09aab6d52b4d1, type: 3}
+  m_Name: AppleProblem
+  m_EditorClassIdentifier: Assembly-CSharp::ProblemData
+  number: 3
+  problemText: Maya has 5 apples. She gives 2 apples to her friend. How many apples
+    does Maya have left?
+  answer: 3
+  solutionSteps: '1) Count Maya''s apples: there are 5. 2) Take away the 2 apples
+    she gives to her friend (APPLE_CRATE_DROP). 3) Count the apples that are left
+    (APPLE_COUNTING_BOUNCE): 5 - 2 = 3.'
+  diagram: {fileID: 11400000, guid: e3a6f62ea29574cc38313f6482e623ba, type: 2}
