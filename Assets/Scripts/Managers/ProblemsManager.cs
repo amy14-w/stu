@@ -19,6 +19,11 @@ public class ProblemsManager : MonoBehaviour
         }
     }
 
+    public void ProblemScanDebug()
+    {
+        TryProblemChange(problems[0]);
+    }
+
     public ProblemData RetrieveProblem(string key)
     {
         ProblemData foundProblem = null;
@@ -47,6 +52,10 @@ public class ProblemsManager : MonoBehaviour
         if (currentProblem == null) 
         {
             currentProblem = newProblem;
+
+            StuConversation.Instance.SetContext(currentProblem.problemText, currentProblem.diagram.description, currentProblem.answer, currentProblem.solutionSteps, currentProblem.diagram.actionTags.ToArray());
+
+            StuConversation.Instance.StartConversation(null);
         }
     }
 

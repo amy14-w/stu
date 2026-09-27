@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.Android.Gradle.Manifest;
 
 public class DiagramManager : MonoBehaviour
 {
@@ -22,20 +23,36 @@ public class DiagramManager : MonoBehaviour
         }
     }
 
-    public async Task TrySpawnDiagram(DiagramData data)
+    private void OnEnable()
     {
-        await DespawnDiagram();
+        StuConversation.Instance.OnShowDiagram += TrySpawnDiagram;
+        StuConversation.Instance.OnHideDiagram += DespawnDiagram;
 
-        Transform diagramAnchor = stuSpawner.GetStu().GetDiagramAnchor();
-
-        spawnedDiagram = Instantiate(data.prefab, diagramAnchor);
-
-        Transform surface = SurfaceManager.Instance.GetMainSurface();
-
-        await spawnedDiagram.GetComponent<Diagram>().Spawn();
+        StuConversation.Instance.OnPerformDiagramAction += CompleteDiagramAction;
     }
 
-    public async Task DespawnDiagram()
+    public void TrySpawnDiagram()
+    {
+        var problem = ProblemsManager.Instance.GetCurrentProblem();
+
+        if (problem != null)
+        {
+            var data = problem.diagram;
+
+            DespawnDiagram();
+            spawnedDiagram = null;
+
+            Transform diagramAnchor = stuSpawner.GetStu().GetDiagramAnchor();
+
+            spawnedDiagram = Instantiate(data.prefab, diagramAnchor);
+
+            Transform surface = SurfaceManager.Instance.GetMainSurface();
+
+            spawnedDiagram.GetComponent<Diagram>().Spawn();
+        }
+    }
+
+    public void DespawnDiagram()
     {
         if (spawnedDiagram != null)
         {
@@ -43,7 +60,7 @@ public class DiagramManager : MonoBehaviour
 
             if (spawnedDiagram.TryGetComponent(out diagram))
             {
-                await diagram.Despawn();
+                diagram.Despawn();
                 spawnedDiagram = null;
             }
             else
@@ -53,9 +70,9 @@ public class DiagramManager : MonoBehaviour
         }
     }
 
-    public async Task CompleteDiagramAction(string actionName)
+    public void CompleteDiagramAction(string actionName)
     {
-        await spawnedDiagram.GetComponent<Diagram>().CompleteAction(actionName);
+        spawnedDiagram.GetComponent<Diagram>().CompleteAction(actionName);
     }
 
     /*public async Task ParseAndCompleteDiagramActions(string fullInput)
