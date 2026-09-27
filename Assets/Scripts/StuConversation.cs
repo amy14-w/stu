@@ -3,13 +3,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using UnityEngine;
 using ElevenLabs.Agents;
 using ElevenLabs.Protocol;
 using Newtonsoft.Json;
 
-[DefaultExecutionOrder(-100)] // before DiagramManager.OnEnable, which subscribes to Instance
 public class StuConversation : MonoBehaviour
 {
     public static StuConversation Instance;
@@ -29,16 +27,6 @@ public class StuConversation : MonoBehaviour
     public string currentIntendedSteps = "1. Subtract 5 from both sides to get 2x = 12. 2. Divide both sides by 2 to get x = 6.";
     public string[] currentDiagramActions = new string[] { "ADD_WEIGHT", "REMOVE_WEIGHT", "BALANCE" };
 
-    [Header("Echo (loudspeaker -> mic)")]
-    [Tooltip("Mute the mic while Stu's voice is playing so the agent doesn't hear itself through the loudspeaker.")]
-    public bool muteMicWhileStuSpeaks = true;
-    [Tooltip("Output loudness (RMS) above this counts as Stu talking.")]
-    public float stuSpeakingThreshold = 0.01f;
-    [Tooltip("Keep the mic muted this long after Stu's last audible sound (covers pauses and room echo).")]
-    public float micResumeDelay = 0.4f;
-    [Tooltip("Experiment: iOS VoiceChat audio session. Made Stu inaudible in testing, so off by default.")]
-    public bool useVoiceChatAEC = false;
-
     [Header("Demo")]
     [Tooltip("ON = no network. Simulates Stu talking so other lanes can integrate.")]
     public bool demoMode = true;
@@ -57,65 +45,20 @@ public class StuConversation : MonoBehaviour
     public event Action<bool> OnStuSpeaking;  // true = Stu has the audio floor
 
     // ---- Action requests from the agent (XR / Diagram lane subscribes) ----
-    public event Action OnShowDiagram;                   // show active question's diagram
-    public event Action OnHideDiagram;                   // hide active diagram
+    public event Action OnShowDiagram;                    // show active question's diagram
+    public event Action OnHideDiagram;                    // hide active diagram
     public event Action<string> OnPerformDiagramAction;  // action_tag (e.g. GROW_SPHERE, ROTATE_MARS)
-    public event Action OnPoint;                         // trigger pointing gesture
-    public event Action OnCheer;                         // trigger cheer animation
-    public event Action OnThink;                         // trigger thinking animation
+    public event Action OnPoint;                          // trigger pointing gesture
+    public event Action OnCheer;                          // trigger cheer animation
+    public event Action OnThink;                          // trigger thinking animation
+    public event Action<int> OnProblemNumberProvided;     // fired when agent specifies problem number
 
     // Tool calls can arrive off the main thread -> marshal to Update().
     readonly Queue<Action> mainThreadQueue = new Queue<Action>();
 
-#if UNITY_IOS && !UNITY_EDITOR
-    // Experiment (branch ios-aec-test): iOS voice-chat audio mode for echo cancellation
-    // (Assets/Plugins/iOS/iOSAudioSessionPlugin.mm). Check the Xcode console for "[StuAEC]".
-    [DllImport("__Internal")] static extern void _EnableIOSVoiceChatAEC();
-#endif
-
-    void EnableEchoCancellation()
-    {
-#if UNITY_IOS && !UNITY_EDITOR
-        if (useVoiceChatAEC) _EnableIOSVoiceChatAEC();
-#endif
-    }
-
-    // ---- Half-duplex echo guard: mic off while Stu's voice is actually playing ----
-    float lastStuAudioTime = -10f;
-    bool micMutedForEcho;
-
-    void UpdateEchoGuard()
-    {
-        var c = ActiveConversation;
-        if (c == null || !muteMicWhileStuSpeaks)
-        {
-            if (micMutedForEcho && c != null) SetMicMuted(c, false);
-            micMutedForEcho = false;
-            return;
-        }
-        if (c.GetOutputVolume() > stuSpeakingThreshold) lastStuAudioTime = Time.unscaledTime;
-        bool mute = Time.unscaledTime - lastStuAudioTime < micResumeDelay;
-        if (mute != micMutedForEcho)
-        {
-            micMutedForEcho = mute;
-            SetMicMuted(c, mute);
-        }
-    }
-
-    static async void SetMicMuted(Conversation c, bool muted)
-    {
-        try { await c.SetMicMuted(muted); }
-        catch (Exception e) { Debug.LogWarning("[Stu] mic mute failed: " + e.Message); }
-    }
-
     void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-            EnableEchoCancellation(); // before ElevenLabs initializes
-        }
+        if (Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); }
         else { Destroy(gameObject); return; }
     }
 
@@ -130,7 +73,6 @@ public class StuConversation : MonoBehaviour
 
     void Update()
     {
-        UpdateEchoGuard();
         while (mainThreadQueue.Count > 0)
         {
             var a = mainThreadQueue.Dequeue();
@@ -138,7 +80,7 @@ public class StuConversation : MonoBehaviour
         }
     }
 
-    void Enqueue(Action a) { lock (mainThreadQueue) mainThreadQueue.Enqueue(a); }
+    public void Enqueue(Action a) { lock (mainThreadQueue) mainThreadQueue.Enqueue(a); }
 
     // ---------------- Public API ----------------
 
@@ -180,7 +122,7 @@ public class StuConversation : MonoBehaviour
                 {
                     Agent = new ConversationConfigOverrideAgent
                     {
-                        FirstMessage = $"Hey! I see you're working on this: {currentQuestionText}. Want a hint, or should we talk it through?"
+                        FirstMessage = $"Hey! Let's get started. What is the number for the problem you are working on?"
                     }
                 }
             };
@@ -243,13 +185,19 @@ public class StuConversation : MonoBehaviour
                 return new ToolResult { ok = true, message = "Thinking." };
             });
 
+            // 8. CLIENT TOOL: provide_problem_number
+            ActiveConversation.RegisterTool<ProvideProblemNumberParams, ToolResult>("provide_problem_number", p =>
+            {
+                Enqueue(() => OnProblemNumberProvided?.Invoke(p.problem_number));
+                return new ToolResult { ok = true, message = "Problem number provided: " + p.problem_number };
+            });
+
             ActiveConversation.ModeChanged += mode => Enqueue(() => OnStuSpeaking?.Invoke(mode == Mode.Speaking));
             ActiveConversation.UserTranscriptReceived += args => Enqueue(() => OnUserSaid?.Invoke(args.UserTranscript));
             ActiveConversation.AgentResponded += args => Enqueue(() => OnStuSaid?.Invoke(args.AgentResponse));
             ActiveConversation.ErrorOccurred += err => Debug.LogError("[Stu] conversation error: " + err);
             ActiveConversation.Disconnected += _ => Enqueue(EndConversationLocal);
 
-            EnableEchoCancellation(); // again: starting the mic can reset Unity's audio session
             Debug.Log("[Stu] conversation started.");
             OnConversationStarted?.Invoke();
         }
@@ -321,5 +269,13 @@ public class StuConversation : MonoBehaviour
     [Serializable] public class PointParams { }
     [Serializable] public class CheerParams { }
     [Serializable] public class ThinkParams { }
+
+    [Serializable]
+    public class ProvideProblemNumberParams
+    {
+        [JsonProperty("problem_number")] public int problem_number;
+        [JsonProperty("problemNumber")] public int ProblemNumberAlias { set => problem_number = value; }
+    }
+
     [Serializable] public class ToolResult { public bool ok = true; public string message = ""; }
 }

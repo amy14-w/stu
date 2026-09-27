@@ -16,7 +16,7 @@ public class Stu : MonoBehaviour
     {
         var target = Camera.main.transform.position;
 
-        //FaceTarget(target);
+        FaceTarget(target);
 
         diagramAnchor.position = transform.position + diagramOffset;
         diagramAnchor.rotation = Quaternion.identity;

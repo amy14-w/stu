@@ -21,16 +21,45 @@ public class ProblemsManager : MonoBehaviour
 
     public void ProblemScanDebug()
     {
-        TryProblemChange(problems[0]);
+        StuConversation.Instance.StartConversation(null);
     }
 
-    public ProblemData RetrieveProblem(string key)
+    private void OnEnable()
+    {
+        StuConversation.Instance.OnProblemNumberProvided += InitiateProblemSolving;
+        StuConversation.Instance.OnConversationEnded += OnConversationOver;
+    }
+
+    private void OnDisable()
+    {
+        StuConversation.Instance.OnProblemNumberProvided -= InitiateProblemSolving;
+        StuConversation.Instance.OnConversationEnded -= OnConversationOver;
+    }
+
+
+    private void OnConversationOver()
+    {
+        currentProblem = null;
+    }
+
+    private void InitiateProblemSolving(int num)
+    {
+        ProblemData problem = RetrieveProblem(num);
+
+        if (problem != null) 
+        {
+            TryProblemChange(problem);
+        }
+    }
+
+
+    public ProblemData RetrieveProblem(int number)
     {
         ProblemData foundProblem = null;
 
         foreach (ProblemData problem in problems) 
         {
-            if (problem.key.Equals(key))
+            if (problem.number == number)
             {
                 foundProblem = problem;
                 break;
@@ -42,7 +71,7 @@ public class ProblemsManager : MonoBehaviour
             return foundProblem;
         } else
         {
-            Debug.LogError("Scanned key is not associated with a problem: " + key);
+            Debug.LogError("Scanned key is not associated with a problem: " + number);
             return null;
         }
     }
@@ -54,8 +83,6 @@ public class ProblemsManager : MonoBehaviour
             currentProblem = newProblem;
 
             StuConversation.Instance.SetContext(currentProblem.problemText, currentProblem.diagram.description, currentProblem.answer, currentProblem.solutionSteps, currentProblem.diagram.actionTags.ToArray());
-
-            StuConversation.Instance.StartConversation(null);
         }
     }
 
