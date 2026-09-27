@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b8b77d8e158eaf4bbdf41eb2b2b3c28, type: 3}
+  m_Name: SolarDiagram
+  m_EditorClassIdentifier: Assembly-CSharp::DiagramData
+  prefab: {fileID: 1561912855223045574, guid: c2b114feff983e74ab12fd15b8159fcc, type: 3}
+  description: ' A model of the solar system with the Sun in the center and the planets
+    around it in order of distance: Mercury, Venus, Earth, Mars, Jupiter, Saturn,
+    Uranus, Neptune. The planets can orbit the Sun, and they can bounce one at a
+    time in order from closest to farthest. '
+  actionTags:
+  - SOLAR_SYSTEM_ORBIT
+  - PLANET_BOUNCE_SEQUENCE

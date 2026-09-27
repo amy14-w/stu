@@ -323,9 +323,9 @@
       "url": "https://packages.unity.com"
     },
     "io.elevenlabs.agents": {
-      "version": "https://github.com/elevenlabs/unity.git",
+      "version": "file:io.elevenlabs.agents",
       "depth": 0,
-      "source": "git",
+      "source": "embedded",
       "dependencies": {
         "com.unity.inputsystem": "1.18.0",
         "com.unity.modules.audio": "1.0.0",
@@ -333,8 +333,7 @@
         "com.unity.modules.physics": "1.0.0",
         "com.unity.modules.unitywebrequest": "1.0.0",
         "com.unity.nuget.newtonsoft-json": "3.2.1"
-      },
-      "hash": "375e152dda6f7c29cb291525d7faa2872dad6e60"
+      }
     },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",

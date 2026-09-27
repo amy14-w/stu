@@ -21,3 +21,6 @@
 .idea/
 .vscode/
 .DS_Store
+
+# Local build tool cache
+.utmp/

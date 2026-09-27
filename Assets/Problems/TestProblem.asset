@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b341ab1cfc589d449bc09aab6d52b4d1, type: 3}
   m_Name: TestProblem
   m_EditorClassIdentifier: Assembly-CSharp::ProblemData
-  key: test
-  problemText: Does the sphere grow?
-  answer: Yes
+  number: 1
+  problemText: How much does the sphere grow? How much does it stretch?
+  answer: 'It '
   solutionSteps: 1) observe the diagram sphere grow animation 2) draw conclusion
     from diagram
   diagram: {fileID: 11400000, guid: 5e2492eedf28b4140bc3223be38d3416, type: 2}

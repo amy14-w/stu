@@ -85,8 +85,8 @@ PlayerSettings:
   macRetinaSupport: 1
   runInBackground: 1
   muteOtherAudioSources: 0
-  Prepare IOS For Recording: 0
-  Force IOS Speakers When Recording: 0
+  Prepare IOS For Recording: 1
+  Force IOS Speakers When Recording: 1
   audioSpatialExperience: 0
   deferSystemGesturesMode: 0
   hideHomeButton: 0
@@ -145,7 +145,10 @@ PlayerSettings:
   visionOSBundleVersion: 1.0
   tvOSBundleVersion: 1.0
   bundleVersion: 1.0.0
-  preloadedAssets: []
+  preloadedAssets:
+  - {fileID: 4800000, guid: e7c77f6eaab324a819efdc13b8125a39, type: 3}
+  - {fileID: 4800000, guid: 6743a50a812740be8c0aa3fccc46fae9, type: 3}
+  - {fileID: 8792172334962700932, guid: 3fd4fc0127790db4bae83f7b77da8d45, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -169,7 +172,7 @@ PlayerSettings:
   applicationIdentifier:
     Android: com.unity.template.ar_mobile
     Standalone: com.unity.template.ar-mobile
-    iPhone: com.unity.template.armobile
+    iPhone: com.hackgt13.stu
   buildNumber:
     Bratwurst: 0
     Standalone: 0
@@ -178,7 +181,7 @@ PlayerSettings:
     tvOS: 0
   overrideDefaultApplicationIdentifier: 1
   AndroidBundleVersionCode: 1
-  AndroidMinSdkVersion: 34
+  AndroidMinSdkVersion: 26
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
   AndroidPreferredDataLocation: 1
@@ -246,14 +249,14 @@ PlayerSettings:
   metalCompileShaderBinary: 0
   iOSRenderExtraFrameOnPause: 0
   iosCopyPluginsCodeInsteadOfSymlink: 0
-  appleDeveloperTeamID: 
+  appleDeveloperTeamID: 87UC6TPSCW
   iOSManualSigningProvisioningProfileID: 
   tvOSManualSigningProvisioningProfileID: 
   VisionOSManualSigningProvisioningProfileID: 
   iOSManualSigningProvisioningProfileType: 0
   tvOSManualSigningProvisioningProfileType: 0
   VisionOSManualSigningProvisioningProfileType: 0
-  appleEnableAutomaticSigning: 0
+  appleEnableAutomaticSigning: 1
   iOSRequireARKit: 0
   iOSAutomaticallyDetectAndAddCapabilities: 1
   appleEnableProMotion: 0
@@ -263,7 +266,7 @@ PlayerSettings:
   templateDefaultScene: Assets/Scenes/SampleScene.unity
   useCustomMainManifest: 0
   useCustomLauncherManifest: 0
-  useCustomMainGradleTemplate: 0
+  useCustomMainGradleTemplate: 1
   useCustomLauncherGradleManifest: 0
   useCustomBaseGradleTemplate: 0
   useCustomGradlePropertiesTemplate: 0
@@ -533,7 +536,13 @@ PlayerSettings:
       m_Height: 1024
       m_Kind: 0
       m_SubKind: 
-  m_BuildTargetBatching: []
+  m_BuildTargetBatching:
+  - m_BuildTarget: Android
+    m_StaticBatching: 1
+    m_DynamicBatching: 0
+  - m_BuildTarget: iPhone
+    m_StaticBatching: 1
+    m_DynamicBatching: 0
   m_BuildTargetShaderSettings: []
   m_BuildTargetGraphicsJobs: []
   m_BuildTargetGraphicsJobMode: []
@@ -574,9 +583,11 @@ PlayerSettings:
   enableInternalProfiler: 0
   logObjCUncaughtExceptions: 1
   enableCrashReportAPI: 0
-  cameraUsageDescription: AR Camera
+  cameraUsageDescription: Stu uses the back camera to show your desk and the front
+    camera to notice when you might be stuck. No images leave your phone.
   locationUsageDescription: 
-  microphoneUsageDescription: 
+  microphoneUsageDescription: Stu listens so you can talk through a problem with
+    your AI study buddy.
   bluetoothUsageDescription: 
   macOSTargetOSVersion: 12.0
   switchNMETAOverride: 
@@ -833,7 +844,7 @@ PlayerSettings:
   webWasm2023: 0
   webEnableSubmoduleStrippingCompatibility: 0
   scriptingDefineSymbols:
-    iPhone: UNITY_XR_ARKIT_LOADER_ENABLED
+    iPhone: UNITY_XR_ARKIT_LOADER_ENABLED;UNITY_XR_ARKIT_FACE_TRACKING_ENABLED
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

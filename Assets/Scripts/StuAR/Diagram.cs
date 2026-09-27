@@ -8,36 +8,31 @@ public class Diagram : MonoBehaviour
 
     [SerializeField] Animator animator;
 
-    public async Task Despawn()
+    public void Despawn()
+    {
+        DespawnAnimation();
+    }
+
+    private async Task DespawnAnimation()
     {
         await PlayActionAnimation("DESPAWN");
 
         Destroy(gameObject);
     }
 
-    public async Task Spawn()
+    public void Spawn()
     {
-        await PlayActionAnimation("RESET");
+        animator.SetTrigger("RESET");
     }
 
-    /*public async Task CompleteActions(List<string> actionTags)
+    public void CompleteAction(string actionTag)
     {
-        foreach (string actionTag in actionTags) 
-        {
-            if (actionTag == "RESET" || data.actionTags.Contains(actionTag)) 
-            {
-                await PlayActionAnimation(actionTag);
-            }
-        }
+        Debug.Log(actionTag);
 
-        Debug.Log("All actions complete for diagram: " + data.name);
-    }*/
-
-    public async Task CompleteAction(string actionTag)
-    {
-        if (actionTag == "RESET" || data.actionTags.Contains(actionTag))
+        if (data.actionTags.Contains(actionTag))
         {
-            await PlayActionAnimation(actionTag);
+            Debug.Log("TRIGGER WORKED");
+            animator.SetTrigger(actionTag);
         }
     }
 
