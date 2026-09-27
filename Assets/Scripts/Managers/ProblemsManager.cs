@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 
 public class ProblemsManager : MonoBehaviour
@@ -19,6 +20,7 @@ public class ProblemsManager : MonoBehaviour
         }
     }
 
+    [ContextMenu("Start Convo")]
     public void ProblemScanDebug()
     {
         StuConversation.Instance.StartConversation(null);

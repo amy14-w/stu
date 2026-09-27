@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b8b77d8e158eaf4bbdf41eb2b2b3c28, type: 3}
   m_Name: AppleDiagram
   m_EditorClassIdentifier: Assembly-CSharp::DiagramData
-  prefab: {fileID: 0}
+  prefab: {fileID: 2347543852242640250, guid: eac99bc3742cf7a4e975f93ad620b5fe, type: 3}
   description: 'Five apples next to a crate. Apples can drop into the crate to show
     them being given away, and the remaining apples can bounce one at a time to count
     them. '

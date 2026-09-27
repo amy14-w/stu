@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b341ab1cfc589d449bc09aab6d52b4d1, type: 3}
   m_Name: PlantProblem
   m_EditorClassIdentifier: Assembly-CSharp::ProblemData
-  number: 0
-  problemText: 
-  answer: 
-  solutionSteps: 
-  diagram: {fileID: 0}
+  number: 2
+  problemText: A plant has just sprouted from its seed. What stage comes next?
+  answer: Seedling
+  solutionSteps: '1) Show the plant life cycle stages appearing in order (PLANT_SEQUENCE_POPUP).
+    2) Find the sprout stage, the plant that just came out of the seed. 3) Highlight
+    the stage right after it (PLANT_STAGE_BOUNCE): the seedling. '
+  diagram: {fileID: 11400000, guid: 30977eacf6310bc48ba5bf88fdb2410d, type: 2}

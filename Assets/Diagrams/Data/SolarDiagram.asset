@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b8b77d8e158eaf4bbdf41eb2b2b3c28, type: 3}
   m_Name: SolarDiagram
   m_EditorClassIdentifier: Assembly-CSharp::DiagramData
-  prefab: {fileID: 0}
+  prefab: {fileID: 1561912855223045574, guid: c2b114feff983e74ab12fd15b8159fcc, type: 3}
   description: ' A model of the solar system with the Sun in the center and the planets
     around it in order of distance: Mercury, Venus, Earth, Mars, Jupiter, Saturn,
     Uranus, Neptune. The planets can orbit the Sun, and they can bounce one at a

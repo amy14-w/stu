@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b8b77d8e158eaf4bbdf41eb2b2b3c28, type: 3}
   m_Name: PlantDiagram
   m_EditorClassIdentifier: Assembly-CSharp::DiagramData
-  prefab: {fileID: 0}
-  description: 
-  actionTags: []
+  prefab: {fileID: 7085340428989650120, guid: 402a67e1304e9c246925f90d0b1a572a, type: 3}
+  description: 'The stages of a plant''s life cycle in order: seed, sprout, seedling,
+    young plant, adult flowering plant. The stages can pop up one after another in
+    sequence, and a single stage can bounce to highlight it.'
+  actionTags:
+  - PLANT_SEQUENCE_POPUP
+  - PLANT_STAGE_BOUNCE
