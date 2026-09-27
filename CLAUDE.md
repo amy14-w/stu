@@ -107,9 +107,11 @@ sizes (check `isConcurrentSessionConfigurationSupported`). Back frames go to Uni
 - Menu Stu > Integrate > Create Integrated Scene copies ARAndAII.unity (Quinton's AR scene + the AI tutor
   StuConversation; falls back to Quinton.unity) to StuIntegrated.unity, which becomes the build scene. Adds Pip
   (StuPipAR = StuPip + Stu component + DiagramAnchor, 13 cm), face detection and `StuARFaceBridge`.
-  Buttons (Spawn Stu / Change Surface / Test Problem) bottom right. Re-run it after the source scene changes.
+  Buttons (Spawn Stu / Change Surface) bottom right; the Test Problem debug button is removed. Re-run it after
+  the source scene changes.
 - Flow: Change Surface -> tap a plane -> Spawn Stu -> face detection starts (pauses while changing surface).
-  Test Problem loads the problem and starts the AI conversation. Stu's "Want a hint?" -> Yes also starts it.
+  Frown -> Stu asks "Stuck on a concept? Want a hint?" -> Yes = what Test Problem did (load the problem + start the
+  AI voice conversation); Not now = bubble closes, no text, Pip back to idle.
   AI tools point / cheer / think drive Pip; the stuck question is paused while the AI is talking.
 - iPhone only for face detection here (ARKit tracks desk + face together). Android: face detection off in this
   scene (ARCore + front plugin deadlocked the S22 camera service); StuWindowDemo still has Android face detection.

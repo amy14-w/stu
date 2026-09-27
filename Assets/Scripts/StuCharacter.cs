@@ -9,7 +9,7 @@ using UnityEngine;
 //   big smile held ~1 s            -> Cheer
 //   face gone / looking away       -> Point (gentle "back to the page" nudge)
 // With the AI tutor (StuConversation) in the scene:
-//   "Yes, I want a hint"           -> starts the voice conversation
+//   "Yes, I want a hint"           -> loads the problem + starts the voice conversation (old Test Problem button)
 //   AI tools point / cheer / think -> Point / Cheer / think face
 // The PipAnimator states set their own faces on enter (PipExpressionState). Stu always asks; it never
 // labels the student.
@@ -110,10 +110,19 @@ public class StuCharacter : MonoBehaviour
         if (wantsHint)
         {
             Trigger(PointTrigger);
-            // Hand over to the AI tutor (uses the current problem's context if one was loaded).
-            if (conversation != null && !conversation.IsInConversation) conversation.StartConversation(null);
+            StartHelp();
         }
-        else if (expressions != null) expressions.ShowBaseFace();
+        else if (expressions != null) expressions.ShowBaseFace(); // back to the normal waiting pose/face
+    }
+
+    // Same as the old Test Problem button: load the problem and start the AI tutor's voice conversation.
+    // ProblemsManager only loads a problem once, so later "Yes" answers just restart the conversation.
+    void StartHelp()
+    {
+        if (conversation == null || conversation.IsInConversation) return;
+        var problems = ProblemsManager.Instance;
+        if (problems != null && problems.GetCurrentProblem() == null) problems.ProblemScanDebug();
+        else conversation.StartConversation(null);
     }
 
     // AI tutor tool calls -> Pip

@@ -14,7 +14,8 @@ using UnityEngine.XR.ARFoundation;
 //   - Face detection (FaceReceiver, FaceSignals, StuckDetector, StuSpeechBubble, ARKitFaceSource) and
 //     StuARFaceBridge, which runs it only while Stu is placed on a chosen surface.
 //   - ARFaceManager on the XR Origin for iPhone (disabled on Android at runtime).
-//   - Change Surface / Test Problem / Spawn Stu buttons moved to the bottom right.
+//   - Change Surface / Spawn Stu buttons moved to the bottom right; the Test Problem debug button is removed
+//     (answering Yes to Stu's "Want a hint?" loads the problem and starts the AI tutor instead).
 // Then makes StuIntegrated the build scene for Android and iOS.
 public static class StuIntegrationSetup
 {
@@ -28,7 +29,9 @@ public static class StuIntegrationSetup
     const float StuHeightMeters = 0.13f;                         // about Quinton's Stu (MainCharacter at 0.065 scale)
     static readonly Vector3 DiagramOffset = new Vector3(0.2f, 0f, 0.2f); // same as Stu.prefab
     // Bottom-up order in the bottom-right corner
-    static readonly string[] Buttons = { "SpawnStuButton", "ChangeSurfaceButton", "TestProblemButton" };
+    static readonly string[] Buttons = { "SpawnStuButton", "ChangeSurfaceButton" };
+    // Removed: Stu's "Want a hint?" -> Yes now does what this debug button did.
+    static readonly string[] RemovedButtons = { "TestProblemButton" };
 
     [MenuItem("Stu/Integrate/Create Integrated Scene")]
     static void CreateIntegratedScene()
@@ -127,6 +130,11 @@ public static class StuIntegrationSetup
 
     static void MoveButtonsBottomRight()
     {
+        foreach (var name in RemovedButtons)
+        {
+            var go = GameObject.Find(name);
+            if (go != null) Object.DestroyImmediate(go);
+        }
         for (int i = 0; i < Buttons.Length; i++)
         {
             var go = GameObject.Find(Buttons[i]);

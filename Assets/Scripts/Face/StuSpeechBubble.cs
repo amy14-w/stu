@@ -17,6 +17,8 @@ public class StuSpeechBubble : MonoBehaviour
     public string yesReply = "Okay! Tell me what's tricky\nand we'll work through it.";
     public string notNowReply = "No problem, I'll be right here.";
     public float replySeconds = 3f;
+    [Tooltip("Show yesReply / notNowReply after answering. Off: the bubble just closes (Yes -> the AI tutor talks).")]
+    public bool showAnswerReplies = false;
 
     StuckDetector detector;
     Camera cam;
@@ -59,10 +61,15 @@ public class StuSpeechBubble : MonoBehaviour
 
     void OnAnswered(bool yes)
     {
-        bubbleText.text = yes ? yesReply : notNowReply;
         buttonRow.gameObject.SetActive(false);
-        replyUntil = Time.time + replySeconds;
         StuWindowDemo.BlockTaps = false;
+        if (!showAnswerReplies)
+        {
+            replyUntil = 0f; // close the bubble right away
+            return;
+        }
+        bubbleText.text = yes ? yesReply : notNowReply;
+        replyUntil = Time.time + replySeconds;
     }
 
     void LateUpdate()
