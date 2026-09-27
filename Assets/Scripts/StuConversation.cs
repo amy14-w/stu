@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using ElevenLabs.Agents;
 using ElevenLabs.Protocol;
@@ -56,9 +57,27 @@ public class StuConversation : MonoBehaviour
     // Tool calls can arrive off the main thread -> marshal to Update().
     readonly Queue<Action> mainThreadQueue = new Queue<Action>();
 
+#if UNITY_IOS && !UNITY_EDITOR
+    // Experiment (branch ios-aec-test): iOS voice-chat audio mode for echo cancellation
+    // (Assets/Plugins/iOS/iOSAudioSessionPlugin.mm). Check the Xcode console for "[StuAEC]".
+    [DllImport("__Internal")] static extern void _EnableIOSVoiceChatAEC();
+#endif
+
+    static void EnableEchoCancellation()
+    {
+#if UNITY_IOS && !UNITY_EDITOR
+        _EnableIOSVoiceChatAEC();
+#endif
+    }
+
     void Awake()
     {
-        if (Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); }
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+            EnableEchoCancellation(); // before ElevenLabs initializes
+        }
         else { Destroy(gameObject); return; }
     }
 
@@ -191,6 +210,7 @@ public class StuConversation : MonoBehaviour
             ActiveConversation.ErrorOccurred += err => Debug.LogError("[Stu] conversation error: " + err);
             ActiveConversation.Disconnected += _ => Enqueue(EndConversationLocal);
 
+            EnableEchoCancellation(); // again: starting the mic can reset Unity's audio session
             Debug.Log("[Stu] conversation started.");
             OnConversationStarted?.Invoke();
         }
