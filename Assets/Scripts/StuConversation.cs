@@ -8,6 +8,7 @@ using ElevenLabs.Agents;
 using ElevenLabs.Protocol;
 using Newtonsoft.Json;
 
+[DefaultExecutionOrder(-100)] // before DiagramManager / ProblemsManager OnEnable, which subscribe to Instance
 public class StuConversation : MonoBehaviour
 {
     public static StuConversation Instance;
@@ -26,6 +27,16 @@ public class StuConversation : MonoBehaviour
     public string currentIntendedAnswer = "x = 6";
     public string currentIntendedSteps = "1. Subtract 5 from both sides to get 2x = 12. 2. Divide both sides by 2 to get x = 6.";
     public string[] currentDiagramActions = new string[] { "ADD_WEIGHT", "REMOVE_WEIGHT", "BALANCE" };
+
+    [Header("Echo (loudspeaker -> mic)")]
+    [Tooltip("Mute the mic while Stu's voice is playing so the agent doesn't hear itself through the loudspeaker.")]
+    public bool muteMicWhileStuSpeaks = true;
+    [Tooltip("Sample rate of the agent's audio (ElevenLabs default pcm_16000; updated automatically if the server says otherwise).")]
+    public int agentAudioSampleRate = 16000;
+    [Tooltip("Keep the mic muted this long after Stu's audio should have finished (phone audio buffering + room echo).")]
+    public float micResumeDelay = 0.8f;
+    [Tooltip("Output loudness (RMS) above this also counts as Stu talking (backup signal).")]
+    public float stuSpeakingThreshold = 0.01f;
 
     [Header("Demo")]
     [Tooltip("ON = no network. Simulates Stu talking so other lanes can integrate.")]
@@ -56,6 +67,66 @@ public class StuConversation : MonoBehaviour
     // Tool calls can arrive off the main thread -> marshal to Update().
     readonly Queue<Action> mainThreadQueue = new Queue<Action>();
 
+    // ---------------- Half-duplex echo guard ----------------
+    // Every chunk of Stu's audio pushes out "Stu is talking until ..." by the chunk's duration; the mic stays
+    // muted until then + micResumeDelay (and while the speaker output is audibly loud). Muted mic = the SDK sends
+    // silence, so the agent can't hear (or get interrupted by) its own voice from the loudspeaker.
+    static readonly System.Diagnostics.Stopwatch echoClock = System.Diagnostics.Stopwatch.StartNew();
+    static double Now => echoClock.Elapsed.TotalSeconds;
+    readonly object echoLock = new object();
+    double stuAudioEndsAt;
+    double lastLoudAt = -10;
+    bool micMutedForEcho;
+
+    // SDK events can arrive off the main thread: only simple math + a lock here.
+    void OnAgentAudio(AudioResponseArgs args)
+    {
+        string b64 = args?.AudioBase64;
+        if (string.IsNullOrEmpty(b64)) return;
+        int pad = b64.EndsWith("==") ? 2 : b64.EndsWith("=") ? 1 : 0;
+        int bytes = b64.Length / 4 * 3 - pad;
+        double seconds = bytes / 2.0 / Math.Max(8000, agentAudioSampleRate); // 16-bit mono PCM
+        lock (echoLock) stuAudioEndsAt = Math.Max(stuAudioEndsAt, Now) + seconds;
+    }
+
+    void OnAgentInterrupted() { lock (echoLock) stuAudioEndsAt = Now; }
+
+    void OnInitiationMetadata(ConversationInitiationMetadataArgs args)
+    {
+        // e.g. "pcm_16000" / "pcm_24000"
+        string f = args?.AgentOutputAudioFormat;
+        int underscore = f?.LastIndexOf('_') ?? -1;
+        if (underscore >= 0 && int.TryParse(f.Substring(underscore + 1), out int rate) && rate >= 8000)
+            agentAudioSampleRate = rate;
+    }
+
+    void UpdateEchoGuard()
+    {
+        var c = ActiveConversation;
+        if (c == null || !muteMicWhileStuSpeaks)
+        {
+            if (micMutedForEcho && c != null) SetMicMuted(c, false);
+            micMutedForEcho = false;
+            return;
+        }
+        double now = Now;
+        if (c.GetOutputVolume() > stuSpeakingThreshold) lastLoudAt = now;
+        double endsAt;
+        lock (echoLock) endsAt = stuAudioEndsAt;
+        bool mute = now < endsAt + micResumeDelay || now - lastLoudAt < micResumeDelay;
+        if (mute != micMutedForEcho)
+        {
+            micMutedForEcho = mute;
+            SetMicMuted(c, mute);
+        }
+    }
+
+    static async void SetMicMuted(Conversation c, bool muted)
+    {
+        try { await c.SetMicMuted(muted); }
+        catch (Exception e) { Debug.LogWarning("[Stu] mic mute failed: " + e.Message); }
+    }
+
     void Awake()
     {
         if (Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); }
@@ -73,6 +144,7 @@ public class StuConversation : MonoBehaviour
 
     void Update()
     {
+        UpdateEchoGuard();
         while (mainThreadQueue.Count > 0)
         {
             var a = mainThreadQueue.Dequeue();
@@ -193,6 +265,10 @@ public class StuConversation : MonoBehaviour
             });
 
             ActiveConversation.ModeChanged += mode => Enqueue(() => OnStuSpeaking?.Invoke(mode == Mode.Speaking));
+            // Echo guard inputs: every audio chunk Stu receives, interruptions, and the audio format.
+            ActiveConversation.AudioReceived += OnAgentAudio;
+            ActiveConversation.Interrupted += _ => OnAgentInterrupted();
+            ActiveConversation.InitiationMetadataReceived += OnInitiationMetadata;
             ActiveConversation.UserTranscriptReceived += args => Enqueue(() => OnUserSaid?.Invoke(args.UserTranscript));
             ActiveConversation.AgentResponded += args => Enqueue(() => OnStuSaid?.Invoke(args.AgentResponse));
             ActiveConversation.ErrorOccurred += err => Debug.LogError("[Stu] conversation error: " + err);
@@ -219,6 +295,8 @@ public class StuConversation : MonoBehaviour
 
     void EndConversationLocal()
     {
+        lock (echoLock) stuAudioEndsAt = 0;
+        micMutedForEcho = false;
         ActiveConversation = null;
         demoActive = false;
         Debug.Log("[Stu] conversation ended.");
