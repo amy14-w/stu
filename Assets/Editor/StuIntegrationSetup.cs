@@ -6,8 +6,9 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 
-// Stu > Integrate > Create Integrated Scene (from Quinton)
-// Copies Quinton's scene to Assets/Scenes/StuIntegrated.unity (Quinton.unity is not modified) and adds:
+// Stu > Integrate > Create Integrated Scene
+// Copies the AR scene (ARAndAII if present, else Quinton) to Assets/Scenes/StuIntegrated.unity (the source
+// scene is not modified) and adds:
 //   - StuPipAR.prefab: StuPip (animated Pip + StuCharacter) + Quinton's Stu component and DiagramAnchor,
 //     scaled to real size, used by StuSpawner.
 //   - Face detection (FaceReceiver, FaceSignals, StuckDetector, StuSpeechBubble, ARKitFaceSource) and
@@ -17,7 +18,10 @@ using UnityEngine.XR.ARFoundation;
 // Then makes StuIntegrated the build scene for Android and iOS.
 public static class StuIntegrationSetup
 {
-    const string SourceScene = "Assets/Scenes/Quinton.unity";
+    // ARAndAII = Quinton's AR scene + the AI tutor (StuConversation); falls back to Quinton's scene.
+    const string AIScene = "Assets/Scenes/ARAndAII.unity";
+    const string QuintonScene = "Assets/Scenes/Quinton.unity";
+    static string SourceScene => File.Exists(AIScene) ? AIScene : QuintonScene;
     const string TargetScene = "Assets/Scenes/StuIntegrated.unity";
     const string PipPrefabPath = "Assets/Prefabs/StuPip.prefab";
     const string ARPrefabPath = "Assets/Prefabs/StuPipAR.prefab";
@@ -26,7 +30,7 @@ public static class StuIntegrationSetup
     // Bottom-up order in the bottom-right corner
     static readonly string[] Buttons = { "SpawnStuButton", "ChangeSurfaceButton", "TestProblemButton" };
 
-    [MenuItem("Stu/Integrate/Create Integrated Scene (from Quinton)")]
+    [MenuItem("Stu/Integrate/Create Integrated Scene")]
     static void CreateIntegratedScene()
     {
         if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
@@ -37,7 +41,7 @@ public static class StuIntegrationSetup
         }
         if (File.Exists(TargetScene))
         {
-            if (!EditorUtility.DisplayDialog("Stu", $"{TargetScene} already exists. Rebuild it from Quinton's scene?", "Rebuild", "Cancel"))
+            if (!EditorUtility.DisplayDialog("Stu", $"{TargetScene} already exists. Rebuild it from {SourceScene}?", "Rebuild", "Cancel"))
                 return;
             AssetDatabase.DeleteAsset(TargetScene);
         }
@@ -89,7 +93,7 @@ public static class StuIntegrationSetup
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
         StuIOSSetup.UseScenesForActivePlatform();
-        Debug.Log($"[Stu] Created {TargetScene} (Quinton's scene + Pip + face detection). It is now the build scene.");
+        Debug.Log($"[Stu] Created {TargetScene} from {SourceScene} (+ Pip + face detection). It is now the build scene.");
     }
 
     // StuPip variant + Quinton's Stu component/DiagramAnchor, scaled to StuHeightMeters.

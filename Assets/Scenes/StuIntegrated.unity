@@ -202,10 +202,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1770149387}
-        m_TargetAssemblyTypeName: ConversationHandlerTest, Assembly-CSharp
-        m_MethodName: Test
-        m_Mode: 5
+      - m_Target: {fileID: 1726130186}
+        m_TargetAssemblyTypeName: ProblemsManager, Assembly-CSharp
+        m_MethodName: ProblemScanDebug
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -252,6 +252,54 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 74219718}
   m_CullTransparentMesh: 1
+--- !u!1 &136512147
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 136512149}
+  - component: {fileID: 136512148}
+  m_Layer: 0
+  m_Name: StuARFaceBridge
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &136512148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 136512147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 909bb1a6caadc4588a686de90ada268f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StuARFaceBridge
+  planeManager: {fileID: 1484131390}
+  faceManager: {fileID: 1484131399}
+  faceReceiver: {fileID: 1907635369}
+  targetFrameRate: 60
+--- !u!4 &136512149
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 136512147}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &143335523
 GameObject:
   m_ObjectHideFlags: 0
@@ -622,192 +670,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 478664269}
   m_CullTransparentMesh: 1
---- !u!1 &758874080
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 758874082}
-  - component: {fileID: 758874081}
-  m_Layer: 0
-  m_Name: StuARFaceBridge
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &758874081
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 758874080}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 909bb1a6caadc4588a686de90ada268f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StuARFaceBridge
-  planeManager: {fileID: 1484131390}
-  faceManager: {fileID: 1484131395}
-  faceReceiver: {fileID: 829641462}
-  targetFrameRate: 60
---- !u!4 &758874082
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 758874080}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &829641461
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 829641467}
-  - component: {fileID: 829641462}
-  - component: {fileID: 829641466}
-  - component: {fileID: 829641465}
-  - component: {fileID: 829641464}
-  - component: {fileID: 829641463}
-  m_Layer: 0
-  m_Name: FaceReceiver
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &829641462
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 829641461}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 054705dd49cc1456a9c0b6368d42496d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FaceReceiver
-  autoStart: 0
-  rotationOverride: -1
-  minFrameIntervalMs: 70
-  startDelaySeconds: 2
-  backCameraWaitTimeout: 15
-  showDebug: 1
---- !u!114 &829641463
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 829641461}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3246dbebea97b43059f59ead0b411c11, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ARKitFaceSource
-  faceManager: {fileID: 1484131395}
-  cameraManager: {fileID: 1686807017}
-  publishHz: 15
---- !u!114 &829641464
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 829641461}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f969eb6e210614c3ab555d8871166128, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StuSpeechBubble
-  stu: {fileID: 0}
-  question: 'Stuck on a concept?
-
-    Want a hint?'
-  yesReply: 'Okay! Tell me what''s tricky
-
-    and we''ll work through it.'
-  notNowReply: No problem, I'll be right here.
-  replySeconds: 3
---- !u!114 &829641465
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 829641461}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9936f93caa6f54519a0f49d19fb771ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StuckDetector
-  demoMode: 1
-  furrowThreshold: 0.3
-  browDownGain: 10
-  squintGain: 3
-  noseSneerGain: 4
-  browInnerUpGain: 0
-  mouthFrownGain: 0
-  smileSuppressThreshold: 0.5
-  requireEyesOnPage: 0
-  lookDownThreshold: 0.3
-  lookAwayThreshold: 0.5
-  lookUpAwayThreshold: 0.4
-  frownDrainRate: 0.5
-  noFaceResetSeconds: 3
-  onPageSeconds: 60
-  demoOnPageSeconds: 10
-  frownSeconds: 8
-  demoFrownSeconds: 1
-  cooldownSeconds: 120
-  demoCooldownSeconds: 20
-  showDebug: 1
---- !u!114 &829641466
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 829641461}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f31004ea4dd7426992e4524ed80a667, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FaceSignals
-  smoothingSeconds: 0.5
-  staleSeconds: 1
-  calibrationSeconds: 3
---- !u!4 &829641467
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 829641461}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1180333610
 GameObject:
   m_ObjectHideFlags: 0
@@ -1264,6 +1126,108 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2006321442}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1359145941 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7956493951419502888, guid: 245fe237afa9ca24b958d70d70160eb6, type: 3}
+  m_PrefabInstance: {fileID: 1587899897}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &1359145942
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1359145941}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &1366564876 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2512387470319625105, guid: 48cb3fb68c91eb94999fd99957eb0cae, type: 3}
@@ -1502,7 +1466,23 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_AnchorPrefab: {fileID: 0}
---- !u!114 &1484131395
+--- !u!114 &1484131398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1484131388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d02b7f864cf2453690cc4db760462934, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.XR.ARFoundation::UnityEngine.XR.ARFoundation.ARMarkerManager
+  <trackablesChanged>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  m_MarkerPrefab: {fileID: 0}
+--- !u!114 &1484131399
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1699,7 +1679,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TEST PROBLEM
+  m_text: DEBUG PROBLEM
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1779,6 +1759,82 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1572913422}
   m_CullTransparentMesh: 1
+--- !u!1001 &1587899897
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3755071483121489956, guid: 245fe237afa9ca24b958d70d70160eb6, type: 3}
+      propertyPath: agentId
+      value: agent_2901m3eqps6tf8drpd194qq0kwzk
+      objectReference: {fileID: 0}
+    - target: {fileID: 3755071483121489956, guid: 245fe237afa9ca24b958d70d70160eb6, type: 3}
+      propertyPath: demoMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3755071483121489956, guid: 245fe237afa9ca24b958d70d70160eb6, type: 3}
+      propertyPath: agentAudioSource
+      value: 
+      objectReference: {fileID: 1359145942}
+    - target: {fileID: 3755071483121489956, guid: 245fe237afa9ca24b958d70d70160eb6, type: 3}
+      propertyPath: autoStartDemoOnPlay
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5979994480817237865, guid: 245fe237afa9ca24b958d70d70160eb6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.40218
+      objectReference: {fileID: 0}
+    - target: {fileID: 5979994480817237865, guid: 245fe237afa9ca24b958d70d70160eb6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5979994480817237865, guid: 245fe237afa9ca24b958d70d70160eb6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.67308
+      objectReference: {fileID: 0}
+    - target: {fileID: 5979994480817237865, guid: 245fe237afa9ca24b958d70d70160eb6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5979994480817237865, guid: 245fe237afa9ca24b958d70d70160eb6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5979994480817237865, guid: 245fe237afa9ca24b958d70d70160eb6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5979994480817237865, guid: 245fe237afa9ca24b958d70d70160eb6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5979994480817237865, guid: 245fe237afa9ca24b958d70d70160eb6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5979994480817237865, guid: 245fe237afa9ca24b958d70d70160eb6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5979994480817237865, guid: 245fe237afa9ca24b958d70d70160eb6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7956493951419502888, guid: 245fe237afa9ca24b958d70d70160eb6, type: 3}
+      propertyPath: m_Name
+      value: StuConversation
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7956493951419502888, guid: 245fe237afa9ca24b958d70d70160eb6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1359145942}
+  m_SourcePrefab: {fileID: 100100000, guid: 245fe237afa9ca24b958d70d70160eb6, type: 3}
 --- !u!1001 &1686807016
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1867,7 +1923,10 @@ PrefabInstance:
       addedObject: {fileID: 1484131394}
     - targetCorrespondingSourceObject: {fileID: 2512387470528047719, guid: 48cb3fb68c91eb94999fd99957eb0cae, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1484131395}
+      addedObject: {fileID: 1484131398}
+    - targetCorrespondingSourceObject: {fileID: 2512387470528047719, guid: 48cb3fb68c91eb94999fd99957eb0cae, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1484131399}
     - targetCorrespondingSourceObject: {fileID: 2512387469002778309, guid: 48cb3fb68c91eb94999fd99957eb0cae, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1865792185}
@@ -1893,6 +1952,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1726130185}
   - component: {fileID: 1726130186}
+  - component: {fileID: 1726130187}
   m_Layer: 0
   m_Name: ProblemsManager
   m_TagString: Untagged
@@ -1929,6 +1989,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProblemsManager
   problems:
   - {fileID: 11400000, guid: 38613a91269671a40a0a71ec6d153b3e, type: 2}
+--- !u!114 &1726130187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1726130184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9deae96de6d534c4f8eb4b295cde8508, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProblemScanner
+  m_MarkerManager: {fileID: 1484131398}
 --- !u!1 &1770149385
 GameObject:
   m_ObjectHideFlags: 0
@@ -2068,6 +2141,144 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 450, y: 600}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1907635368
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1907635374}
+  - component: {fileID: 1907635369}
+  - component: {fileID: 1907635373}
+  - component: {fileID: 1907635372}
+  - component: {fileID: 1907635371}
+  - component: {fileID: 1907635370}
+  m_Layer: 0
+  m_Name: FaceReceiver
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1907635369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1907635368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 054705dd49cc1456a9c0b6368d42496d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FaceReceiver
+  autoStart: 0
+  rotationOverride: -1
+  minFrameIntervalMs: 70
+  startDelaySeconds: 2
+  backCameraWaitTimeout: 15
+  showDebug: 1
+--- !u!114 &1907635370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1907635368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3246dbebea97b43059f59ead0b411c11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ARKitFaceSource
+  faceManager: {fileID: 1484131399}
+  cameraManager: {fileID: 1686807017}
+  publishHz: 15
+--- !u!114 &1907635371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1907635368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f969eb6e210614c3ab555d8871166128, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StuSpeechBubble
+  stu: {fileID: 0}
+  question: 'Stuck on a concept?
+
+    Want a hint?'
+  yesReply: 'Okay! Tell me what''s tricky
+
+    and we''ll work through it.'
+  notNowReply: No problem, I'll be right here.
+  replySeconds: 3
+--- !u!114 &1907635372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1907635368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9936f93caa6f54519a0f49d19fb771ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StuckDetector
+  demoMode: 1
+  furrowThreshold: 0.3
+  browDownGain: 10
+  squintGain: 3
+  noseSneerGain: 4
+  browInnerUpGain: 0
+  mouthFrownGain: 0
+  smileSuppressThreshold: 0.5
+  requireEyesOnPage: 0
+  lookDownThreshold: 0.3
+  lookAwayThreshold: 0.5
+  lookUpAwayThreshold: 0.4
+  frownDrainRate: 0.5
+  noFaceResetSeconds: 3
+  onPageSeconds: 60
+  demoOnPageSeconds: 10
+  frownSeconds: 8
+  demoFrownSeconds: 1
+  cooldownSeconds: 120
+  demoCooldownSeconds: 20
+  showDebug: 1
+--- !u!114 &1907635373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1907635368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f31004ea4dd7426992e4524ed80a667, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FaceSignals
+  smoothingSeconds: 0.5
+  staleSeconds: 1
+  calibrationSeconds: 3
+--- !u!4 &1907635374
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1907635368}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1952323003
 GameObject:
   m_ObjectHideFlags: 0
@@ -2356,6 +2567,14 @@ PrefabInstance:
       propertyPath: data
       value: 
       objectReference: {fileID: 11400000, guid: 5e2492eedf28b4140bc3223be38d3416, type: 2}
+    - target: {fileID: 8631580485637436677, guid: 35654ad840ab3fa45ab784fde2213c0c, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8631580485637436677, guid: 35654ad840ab3fa45ab784fde2213c0c, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2371,7 +2590,8 @@ SceneRoots:
   - {fileID: 2022648587}
   - {fileID: 1686807016}
   - {fileID: 1231178663}
+  - {fileID: 1587899897}
   - {fileID: 2006321442}
   - {fileID: 8214411549035875029}
-  - {fileID: 829641467}
-  - {fileID: 758874082}
+  - {fileID: 1907635374}
+  - {fileID: 136512149}

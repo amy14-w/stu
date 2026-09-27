@@ -1,0 +1,55 @@
+{
+  "name": "io.elevenlabs.agents",
+  "version": "0.1.0",
+  "displayName": "ElevenAgents",
+  "description": "AI voice agents from ElevenLabs",
+  "unity": "6000.3",
+  "changelogUrl": "https://github.com/elevenlabs/unity/blob/main/CHANGELOG.md",
+  "documentationUrl": "https://github.com/elevenlabs/unity#readme",
+  "licensesUrl": "https://github.com/elevenlabs/unity/blob/main/LICENSE",
+  "author": {
+    "name": "ElevenLabs",
+    "url": "https://elevenlabs.io"
+  },
+  "keywords": [
+    "elevenlabs",
+    "voice",
+    "ai",
+    "agents",
+    "webgl"
+  ],
+  "files": [
+    "Runtime",
+    "Runtime.meta",
+    "Editor",
+    "Editor.meta",
+    "Tests",
+    "Tests.meta",
+    "Plugins",
+    "Plugins.meta",
+    "Samples~/QuickStart",
+    "Samples~/GettingStarted",
+    "COMPATIBILITY.md",
+    "CONTRIBUTING.md"
+  ],
+  "samples": [
+    {
+      "displayName": "GettingStarted",
+      "description": "Walk-up-and-talk demo: trigger-based session lifecycle, dynamic variables, spatial audio, and a per-frame volume-driven bob.",
+      "path": "Samples~/GettingStarted"
+    },
+    {
+      "displayName": "QuickStart",
+      "description": "Minimal scene showing how to open a Conversation session and render the live transcript.",
+      "path": "Samples~/QuickStart"
+    }
+  ],
+  "dependencies": {
+    "com.unity.inputsystem": "1.18.0",
+    "com.unity.modules.audio": "1.0.0",
+    "com.unity.modules.imgui": "1.0.0",
+    "com.unity.modules.physics": "1.0.0",
+    "com.unity.modules.unitywebrequest": "1.0.0",
+    "com.unity.nuget.newtonsoft-json": "3.2.1"
+  }
+}

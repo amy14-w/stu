@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using System.Collections.Generic;
-using Unity.Android.Gradle.Manifest;
 
 public class DiagramManager : MonoBehaviour
 {

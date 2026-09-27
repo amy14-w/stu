@@ -66,6 +66,14 @@ public class StuARFaceBridge : MonoBehaviour
 
         if (stuPlaced && !StudyMode) EnterStudy();
         else if (!stuPlaced && StudyMode) ExitStudy();
+
+        // While the AI tutor is talking with the student, Stu doesn't also ask "Stuck?".
+        if (detector != null)
+        {
+            bool talking = StuConversation.Instance != null && StuConversation.Instance.IsInConversation;
+            if (talking && detector.enabled) detector.ResetState();
+            detector.enabled = !talking;
+        }
     }
 
     void EnterStudy()

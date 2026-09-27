@@ -8,6 +8,9 @@ using UnityEngine;
 //   "Yes"                          -> Point
 //   big smile held ~1 s            -> Cheer
 //   face gone / looking away       -> Point (gentle "back to the page" nudge)
+// With the AI tutor (StuConversation) in the scene:
+//   "Yes, I want a hint"           -> starts the voice conversation
+//   AI tools point / cheer / think -> Point / Cheer / think face
 // The PipAnimator states set their own faces on enter (PipExpressionState). Stu always asks; it never
 // labels the student.
 public class StuCharacter : MonoBehaviour
@@ -36,6 +39,7 @@ public class StuCharacter : MonoBehaviour
 
     StuckDetector detector;
     FaceSignals signals;
+    StuConversation conversation;
     StuckState lastState = StuckState.Watching;
     float smileTime, awayTime, nextCheer, nextNudge;
 
@@ -46,11 +50,20 @@ public class StuCharacter : MonoBehaviour
         if (animator != null) animator.applyRootMotion = false; // placement code owns the position
     }
 
-    void OnDisable() => Subscribe(false);
+    void OnDisable()
+    {
+        Subscribe(false);
+        SubscribeConversation(false);
+    }
 
     void Update()
     {
         if (model != null) model.localRotation = Quaternion.Euler(0f, modelYawOffset, 0f);
+        if (conversation == null && StuConversation.Instance != null)
+        {
+            conversation = StuConversation.Instance;
+            SubscribeConversation(true);
+        }
         if (!reactToFace) return;
 
         if (detector == null)
@@ -94,8 +107,30 @@ public class StuCharacter : MonoBehaviour
 
     void OnAnswered(bool wantsHint)
     {
-        if (wantsHint) Trigger(PointTrigger);
+        if (wantsHint)
+        {
+            Trigger(PointTrigger);
+            // Hand over to the AI tutor (uses the current problem's context if one was loaded).
+            if (conversation != null && !conversation.IsInConversation) conversation.StartConversation(null);
+        }
         else if (expressions != null) expressions.ShowBaseFace();
+    }
+
+    // AI tutor tool calls -> Pip
+    void OnAIPoint() => Trigger(PointTrigger);
+    void OnAICheer() => Trigger(CheerTrigger);
+    void OnAIThink() { if (expressions != null) expressions.ShowThinkFace(); }
+
+    void SubscribeConversation(bool on)
+    {
+        if (conversation == null) return;
+        conversation.OnPoint -= OnAIPoint;
+        conversation.OnCheer -= OnAICheer;
+        conversation.OnThink -= OnAIThink;
+        if (!on) return;
+        conversation.OnPoint += OnAIPoint;
+        conversation.OnCheer += OnAICheer;
+        conversation.OnThink += OnAIThink;
     }
 
     public void Cheer() => Trigger(CheerTrigger);

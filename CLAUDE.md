@@ -29,12 +29,9 @@ and feeds MediaPipe so Stu reacts to the student's face.
 - Plugins in the project:
   - MediaPipe Unity Plugin 0.16.3 (homuler), embedded at `Packages/com.github.homuler.mediapipe`,
     samples in `Assets/MediaPipeUnity`. Android builds need `libc++_shared.so` in `Assets/Plugins/Android`.
-  - ElevenLabs Unity SDK (`io.elevenlabs.agents`, installed from `https://github.com/elevenlabs/unity.git`).
-    KNOWN ISSUE: the repo root includes a `TestProject/` folder that produces ~44 "has no meta file"
-    errors, and Unity aborts Android builds because of them ("Error building Player: 43 errors").
-    Temporary workaround used for testing: remove its line from `Packages/manifest.json` locally (do not commit).
-    Permanent fix to do: install from the correct subfolder with `?path=`, or embed the package in
-    `Packages/` and delete `TestProject/`.
+  - ElevenLabs Unity SDK (`io.elevenlabs.agents`) is EMBEDDED at `Packages/io.elevenlabs.agents` (commit 375e152,
+    see its EMBEDDED.md). Installing from the git URL pulled in the repo's `TestProject/` (no .meta files), which
+    aborted Android/iOS builds. No local manifest workaround is needed anymore.
 - Mac disk space is tight. Android builds need ~10-15 GB free ("No space left on device" = disk full).
 
 ## What we learned about the cameras (important)
@@ -105,16 +102,18 @@ sizes (check `isConcurrentSessionConfigurationSupported`). Back frames go to Uni
 - ARKit settings: Face Tracking ON. iOS bundle id `com.hackgt13.stu`. Building needs Unity iOS Build Support,
   Xcode, and an Apple ID (free personal team is fine); tune stuck thresholds again on the iPhone.
 
-## Integrated scene (Quinton's AR scene + Pip + face detection, iPhone), branch desk-placement
+## Integrated scene (semi-finalist): AR desk + Pip + face detection + AI tutor, iPhone
 
-- Menu Stu > Integrate > Create Integrated Scene (from Quinton) copies Quinton.unity to StuIntegrated.unity
-  (Quinton.unity untouched) and adds Pip (StuPipAR prefab = StuPip + Stu component + DiagramAnchor, 13 cm),
-  face detection, and `StuARFaceBridge`. Buttons (Spawn Stu / Change Surface / Test Problem) bottom right.
-- Flow: Change Surface -> tap a plane -> Spawn Stu -> face detection starts. Change Surface pauses it.
-- iPhone only for face detection here: ARKit tracks desk + face together, so Stu stays anchored on the real
-  desk. Android: face detection is off in this scene (ARCore + front plugin deadlocked the S22 camera service);
-  use StuWindowDemo for Android face detection.
-- Re-run the menu after Quinton changes his scene to pick up his changes.
+- Menu Stu > Integrate > Create Integrated Scene copies ARAndAII.unity (Quinton's AR scene + the AI tutor
+  StuConversation; falls back to Quinton.unity) to StuIntegrated.unity, which becomes the build scene. Adds Pip
+  (StuPipAR = StuPip + Stu component + DiagramAnchor, 13 cm), face detection and `StuARFaceBridge`.
+  Buttons (Spawn Stu / Change Surface / Test Problem) bottom right. Re-run it after the source scene changes.
+- Flow: Change Surface -> tap a plane -> Spawn Stu -> face detection starts (pauses while changing surface).
+  Test Problem loads the problem and starts the AI conversation. Stu's "Want a hint?" -> Yes also starts it.
+  AI tools point / cheer / think drive Pip; the stuck question is paused while the AI is talking.
+- iPhone only for face detection here (ARKit tracks desk + face together). Android: face detection off in this
+  scene (ARCore + front plugin deadlocked the S22 camera service); StuWindowDemo still has Android face detection.
+- iOS needs camera + microphone usage descriptions (set in Player Settings).
 
 ## Conventions
 

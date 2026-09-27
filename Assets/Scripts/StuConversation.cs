@@ -8,6 +8,7 @@ using ElevenLabs.Agents;
 using ElevenLabs.Protocol;
 using Newtonsoft.Json;
 
+[DefaultExecutionOrder(-100)] // before DiagramManager.OnEnable, which subscribes to Instance
 public class StuConversation : MonoBehaviour
 {
     public static StuConversation Instance;
