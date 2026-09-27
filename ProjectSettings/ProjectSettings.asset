@@ -85,8 +85,8 @@ PlayerSettings:
   macRetinaSupport: 1
   runInBackground: 1
   muteOtherAudioSources: 0
-  Prepare IOS For Recording: 0
-  Force IOS Speakers When Recording: 0
+  Prepare IOS For Recording: 1
+  Force IOS Speakers When Recording: 1
   audioSpatialExperience: 0
   deferSystemGesturesMode: 0
   hideHomeButton: 0
@@ -586,7 +586,8 @@ PlayerSettings:
   cameraUsageDescription: Stu uses the back camera to show your desk and the front
     camera to notice when you might be stuck. No images leave your phone.
   locationUsageDescription: 
-  microphoneUsageDescription: Stu listens so you can talk through a problem with your AI study buddy.
+  microphoneUsageDescription: Stu listens so you can talk through a problem with
+    your AI study buddy.
   bluetoothUsageDescription: 
   macOSTargetOSVersion: 12.0
   switchNMETAOverride: 
