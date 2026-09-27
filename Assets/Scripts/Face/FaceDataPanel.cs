@@ -225,7 +225,8 @@ public class FaceDataPanel : MonoBehaviour
         SetRowRect(rt, y, h);
         y -= h;
 
-        var nameText = Label(rt, 24, Muted, TextAnchor.MiddleLeft);
+        var nameText = Label(rt, 26, Color.white, TextAnchor.MiddleLeft, FontStyle.Bold);
+        nameText.text = name;
         nameText.rectTransform.anchorMax = new Vector2(0.34f, 1f);
 
         var track = Box("Track", rt, TrackColor);
@@ -246,7 +247,7 @@ public class FaceDataPanel : MonoBehaviour
             marker.anchorMin = marker.anchorMax = new Vector2(0.5f, 0.5f);
         }
 
-        var value = Label(rt, 24, Color.white, TextAnchor.MiddleRight);
+        var value = Label(rt, 26, Color.white, TextAnchor.MiddleRight);
         value.rectTransform.anchorMin = new Vector2(0.75f, 0f);
 
         return new Row { value = value, fill = fill, fillImage = fill.GetComponent<Image>(), marker = marker };
