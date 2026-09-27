@@ -42,6 +42,7 @@ public class ProblemsManager : MonoBehaviour
     private void OnConversationOver()
     {
         currentProblem = null;
+        DiagramManager.Instance.DespawnDiagram();
     }
 
     private void InitiateProblemSolving(int num)
