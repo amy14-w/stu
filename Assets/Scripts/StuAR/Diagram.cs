@@ -27,8 +27,11 @@ public class Diagram : MonoBehaviour
 
     public void CompleteAction(string actionTag)
     {
+        Debug.Log(actionTag);
+
         if (data.actionTags.Contains(actionTag))
         {
+            Debug.Log("TRIGGER WORKED");
             animator.SetTrigger(actionTag);
         }
     }

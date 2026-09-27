@@ -17,5 +17,5 @@ MonoBehaviour:
     them being given away, and the remaining apples can bounce one at a time to count
     them. '
   actionTags:
-  - 'APPLE_CRATE_DROP '
+  - APPLE_CRATE_DROP
   - APPLE_COUNTING_BOUNCE

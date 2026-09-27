@@ -18,5 +18,5 @@ MonoBehaviour:
     Uranus, Neptune. The planets can orbit the Sun, and they can bounce one at a
     time in order from closest to farthest. '
   actionTags:
-  - 'SOLAR_SYSTEM_ORBIT '
-  - 'PLANET_BOUNCE_SEQUENCE  '
+  - SOLAR_SYSTEM_ORBIT
+  - PLANET_BOUNCE_SEQUENCE
